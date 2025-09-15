@@ -14,7 +14,70 @@ const Index = () => {
   const [selectedCategory, setSelectedCategory] = useState("All");
   const navigate = useNavigate();
 
-  const filteredTools = healthTools.filter((tool) => {
+  // Mock health tools if the import fails
+  const defaultTools = [
+    {
+      id: "anxiety-assessment",
+      title: "Anxiety Assessment",
+      description: "Comprehensive evaluation of anxiety symptoms and their impact on daily life",
+      category: "Mental Health",
+      difficulty: "Easy",
+      estimatedTime: "6-8 min",
+      icon: "🧠"
+    },
+    {
+      id: "asthma-checker",
+      title: "Asthma Symptom Checker", 
+      description: "Comprehensive assessment of respiratory symptoms that might indicate asthma",
+      category: "Respiratory",
+      difficulty: "Easy", 
+      estimatedTime: "6-8 min",
+      icon: "🫁"
+    },
+    {
+      id: "covid-checker",
+      title: "COVID-19 Symptom Checker",
+      description: "Assessment of symptoms that might indicate COVID-19 infection",
+      category: "Infectious Disease",
+      difficulty: "Easy",
+      estimatedTime: "5-7 min", 
+      icon: "🦠"
+    },
+    {
+      id: "diabetes-risk",
+      title: "Diabetes Risk Assessment",
+      description: "Evaluation of risk factors for developing diabetes",
+      category: "Metabolic Health",
+      difficulty: "Easy",
+      estimatedTime: "6-8 min",
+      icon: "🩺"
+    },
+    {
+      id: "depression-assessment", 
+      title: "Depression Assessment",
+      description: "Evaluation of depressive symptoms and their impact on daily functioning",
+      category: "Mental Health",
+      difficulty: "Easy",
+      estimatedTime: "7-9 min",
+      icon: "💭"
+    },
+    {
+      id: "heart-risk",
+      title: "Heart Disease Risk Assessment", 
+      description: "Evaluation of cardiovascular health and risk factors",
+      category: "Heart Health",
+      difficulty: "Medium",
+      estimatedTime: "8-10 min",
+      icon: "❤️"
+    }
+  ];
+
+  // Use imported tools or fallback to default
+  const toolsToUse = healthTools && healthTools.length > 0 ? healthTools : defaultTools;
+  const categoriesToUse = categories && categories.length > 0 ? categories : 
+    ["All", "Mental Health", "Respiratory", "Infectious Disease", "Metabolic Health", "Heart Health"];
+
+  const filteredTools = toolsToUse.filter((tool) => {
     const matchesSearch = tool.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
                           tool.description.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesCategory = selectedCategory === "All" || tool.category === selectedCategory;
@@ -46,11 +109,10 @@ const Index = () => {
           
           {/* Title */}
           <h1 className="text-3xl md:text-5xl font-bold text-gray-900 dark:text-white mb-4">
-            Get Instant Health Answers with AI
+            Your AI Health Assistant
           </h1>
           <p className="text-lg text-gray-600 dark:text-gray-300 mb-8 max-w-2xl mx-auto">
-            Ask our AI about symptoms, treatments, medications, or any health concerns. 
-            Powered by advanced GLM-4.5-Flash technology.
+            Get instant health insights with AI-powered conversations and comprehensive assessments
           </p>
 
           {/* PROMINENT SEARCH BAR */}
@@ -59,16 +121,13 @@ const Index = () => {
             onClick={handleAISearch}
           >
             <div className="relative">
-              {/* Glow Effect */}
-              <div className="absolute -inset-1 bg-gradient-to-r from-blue-300 to-purple-300 rounded-full opacity-20 group-hover:opacity-30 transition duration-300 blur"></div>
-              
               {/* Search Bar */}
               <div className="relative bg-white dark:bg-gray-800 rounded-full shadow-2xl border-2 border-blue-200 dark:border-blue-800 group-hover:border-blue-400 dark:group-hover:border-blue-600 transition-all duration-300">
                 <div className="flex items-center gap-6 px-8 py-6">
                   <Search className="w-7 h-7 text-gray-400 group-hover:text-blue-500 transition-colors flex-shrink-0" />
                   
                   <div className="flex-1 text-left text-gray-500 dark:text-gray-400 text-xl font-medium">
-                    Ask me: "I have chest pain and shortness of breath"
+                    Ask me about your health... (e.g., I have chest pain and shortness of breath)
                   </div>
                   
                   <div className="bg-gradient-to-r from-blue-500 to-purple-600 text-white rounded-full h-14 w-14 flex items-center justify-center group-hover:scale-110 transition-transform flex-shrink-0 shadow-lg">
@@ -82,17 +141,32 @@ const Index = () => {
           {/* Features */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4 max-w-3xl mx-auto text-sm text-gray-600 dark:text-gray-300">
             <div className="flex items-center justify-center gap-2">
-              <span className="text-green-500">✓</span>
-              <span>Free AI Health Consultation</span>
+              <span className="text-green-500">AI-Powered Conversations</span>
             </div>
             <div className="flex items-center justify-center gap-2">
-              <span className="text-blue-500">✓</span>
-              <span>Instant Medical Guidance</span>
+              <span className="text-blue-500">Smart Health Questions</span>
             </div>
             <div className="flex items-center justify-center gap-2">
-              <span className="text-purple-500">✓</span>
-              <span>24/7 Available</span>
+              <span className="text-purple-500">Personalized Advice</span>
             </div>
+          </div>
+
+          {/* CTA Buttons */}
+          <div className="flex flex-col sm:flex-row gap-4 justify-center mt-8">
+            <Button 
+              size="lg" 
+              onClick={handleAISearch}
+              className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-3"
+            >
+              Get Started Free
+            </Button>
+            <Button 
+              size="lg" 
+              variant="outline"
+              className="border-2 border-gray-300 hover:border-blue-600 px-8 py-3"
+            >
+              Learn More
+            </Button>
           </div>
         </div>
       </div>
@@ -112,7 +186,7 @@ const Index = () => {
               />
             </div>
             <div className="flex gap-2 flex-wrap">
-              {categories.map((category) => (
+              {categoriesToUse.map((category) => (
                 <Badge
                   key={category}
                   variant={selectedCategory === category ? "default" : "outline"}
@@ -159,22 +233,6 @@ const Index = () => {
         </div>
       </section>
 
-      {/* Simple CTA Section */}
-      <section className="py-12 px-4 bg-primary/5">
-        <div className="max-w-4xl mx-auto text-center">
-          <h2 className="text-2xl md:text-3xl font-bold mb-4 text-foreground">
-            Ready to Take Control of Your Health?
-          </h2>
-          <p className="text-lg mb-6 text-muted-foreground">
-            Join thousands of users who trust FitScan for their health assessments
-          </p>
-          <Button size="lg" className="text-primary-foreground">
-            Get Started Today
-            <ChevronRight className="ml-2 h-5 w-5" />
-          </Button>
-        </div>
-      </section>
-
       {/* Professional Footer */}
       <footer className="bg-background border-t border-border">
         <div className="max-w-7xl mx-auto px-4 py-12">
@@ -191,12 +249,6 @@ const Index = () => {
                 Your trusted health assessment platform providing accurate, AI-powered symptom checkers
                 and diagnostic tools for better health decisions.
               </p>
-              <div className="flex items-center gap-4">
-                <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                  <Globe className="h-4 w-4" />
-                  <span>www.fitscan.life</span>
-                </div>
-              </div>
             </div>
             {/* Quick Links */}
             <div>
@@ -220,115 +272,36 @@ const Index = () => {
                 </li>
                 <li>
                   <button
-                    onClick={() => navigate("/blog")}
+                    onClick={() => navigate("/chat")}
                     className="text-muted-foreground hover:text-foreground transition-colors"
                   >
-                    Blog
+                    AI Chat
                   </button>
-                </li>
-                <li>
-                  <span className="text-muted-foreground">Privacy Policy</span>
-                </li>
-                <li>
-                  <span className="text-muted-foreground">Terms of Service</span>
                 </li>
               </ul>
             </div>
-            {/* Contact & Developer Info */}
+            {/* Contact Info */}
             <div>
-              <h3 className="font-semibold text-foreground mb-4">Contact & Support</h3>
-              <div className="space-y-4">
-                {/* Email Contact */}
+              <h3 className="font-semibold text-foreground mb-4">Contact</h3>
+              <div className="space-y-3">
                 <div className="flex items-center gap-3">
-                  <Mail className="h-4 w-4 text-primary flex-shrink-0" />
-                  <div>
-                    <p className="text-sm font-medium text-foreground">Email Us</p>
-                    <a
-                      href="mailto:hollyman2313@gmail.com"
-                      className="text-sm text-muted-foreground hover:text-primary transition-colors"
-                    >
-                      hollyman2313@gmail.com
-                    </a>
-                  </div>
+                  <Mail className="h-4 w-4 text-primary" />
+                  <a href="mailto:hollyman2313@gmail.com" className="text-muted-foreground hover:text-primary">
+                    hollyman2313@gmail.com
+                  </a>
                 </div>
-                {/* Instagram Contact */}
                 <div className="flex items-center gap-3">
-                  <Instagram className="h-4 w-4 text-primary flex-shrink-0" />
-                  <div>
-                    <p className="text-sm font-medium text-foreground">Follow Us</p>
-                    <a
-                      href="https://www.instagram.com/broxgit?igsh=MXNyMXFzM3VyNXB6eA=="
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="text-sm text-muted-foreground hover:text-primary transition-colors"
-                    >
-                      @broxgit
-                    </a>
-                  </div>
-                </div>
-                {/* Developer Credit */}
-                <div className="pt-4 border-t border-border">
-                  <p className="text-xs text-muted-foreground">Developed by</p>
-                  <a
-                    href="https://www.instagram.com/broxgit?igsh=MXNyMXFzM3VyNXB6eA=="
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-sm font-semibold text-primary hover:text-primary/80 transition-colors"
-                  >
-                    BroxGit
+                  <Instagram className="h-4 w-4 text-primary" />
+                  <a href="https://www.instagram.com/broxgit" target="_blank" className="text-muted-foreground hover:text-primary">
+                    @broxgit
                   </a>
                 </div>
               </div>
             </div>
           </div>
-          {/* Bottom Bar */}
-          <div className="border-t border-border mt-12 pt-8">
-            <div className="flex flex-col md:flex-row justify-between items-center gap-4">
-              <div className="flex items-center gap-4 text-sm text-muted-foreground">
-                <span>© {new Date().getFullYear()} FitScan Health Assessment Platform</span>
-                <span className="hidden md:inline">•</span>
-                <span className="hidden md:inline">All rights reserved</span>
-              </div>
-              <div className="flex items-center gap-4">
-                {/* Social Links */}
-                <a
-                  href="mailto:hollyman2313@gmail.com"
-                  className="p-2 rounded-full bg-primary/10 text-primary hover:bg-primary/20 transition-colors"
-                  aria-label="Email"
-                >
-                  <Mail className="h-4 w-4" />
-                </a>
-                <a
-                  href="https://www.instagram.com/broxgit?igsh=MXNyMXFzM3VyNXB6eA=="
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="p-2 rounded-full bg-primary/10 text-primary hover:bg-primary/20 transition-colors"
-                  aria-label="Instagram"
-                >
-                  <Instagram className="h-4 w-4" />
-                </a>
-              </div>
-            </div>
-            {/* Developer Attribution */}
-            <div className="text-center mt-6 pt-4 border-t border-border">
-              <p className="text-xs text-muted-foreground">
-                Crafted with <Heart className="h-3 w-3 inline text-red-500 mx-1" /> by{" "}
-                <a
-                  href="https://www.instagram.com/broxgit?igsh=MXNyMXFzM3VyNXB6eA=="
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="font-semibold text-primary hover:text-primary/80 transition-colors"
-                >
-                  BroxGit
-                </a>
-                {" "}- Your trusted developer for innovative health solutions
-              </p>
-            </div>
-          </div>
         </div>
       </footer>
 
-      {/* Voice Health Chatbot - Floating Widget */}
       <VoiceHealthChatbot />
     </div>
   );
