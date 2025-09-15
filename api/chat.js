@@ -23,12 +23,12 @@ export default async function handler(req, res) {
     let messages = [
       {
         role: 'system',
-        content: "You are FitScan's medical AI assistant. Provide helpful, safe, and professional health information. Always include disclaimers."
+        content: "You are FitScan's medical AI assistant. Give clear, concise answers (3–4 sentences max). Avoid long paragraphs. Always include a disclaimer."
       }
     ];
 
-    // Add last 5 messages for context
-    conversationHistory.slice(-5).forEach(msg => {
+    // Add last 3 messages for context
+    conversationHistory.slice(-3).forEach(msg => {
       messages.push({
         role: msg.isUser ? 'user' : 'assistant',
         content: msg.text
@@ -48,8 +48,8 @@ export default async function handler(req, res) {
       body: JSON.stringify({
         model: 'glm-4.5-flash',
         messages,
-        max_tokens: 800,
-        temperature: 0.7,
+        max_tokens: 300,   // shorter replies
+        temperature: 0.5,  // less rambling
         top_p: 0.9,
         stream: false
       })
@@ -75,7 +75,7 @@ export default async function handler(req, res) {
     }
 
     // --- Add disclaimer ---
-    aiResponse += "\n\n💡 **Disclaimer:** This is AI-generated health information for educational purposes only. Always consult a qualified doctor for medical advice.";
+    aiResponse += "\n\n💡 *Disclaimer: This is AI-generated health information. Always consult a qualified doctor for medical advice.*";
 
     // --- Send back to frontend ---
     return res.status(200).json({
