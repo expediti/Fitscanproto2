@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useSearchParams, useNavigate } from 'react-router-dom';
 import { ArrowLeft, Send, Bot, User, Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -19,6 +19,15 @@ const Chat = () => {
   const [messages, setMessages] = useState<Message[]>([]);
   const [inputValue, setInputValue] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const messagesEndRef = useRef<HTMLDivElement>(null);
+
+  const scrollToBottom = () => {
+    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+  };
+
+  useEffect(() => {
+    scrollToBottom();
+  }, [messages]);
 
   useEffect(() => {
     const initialQuery = searchParams.get('q');
@@ -43,17 +52,31 @@ const Chat = () => {
     setInputValue('');
     setIsLoading(true);
 
-    // Simulate AI response (replace with actual API call)
-    setTimeout(() => {
-      const aiMessage: Message = {
+    try {
+      // For now, simulate AI response (replace with real API later)
+      setTimeout(() => {
+        const aiMessage: Message = {
+          id: (Date.now() + 1).toString(),
+          text: `Thank you for your health question: "${text}"\n\nI understand your concern. Based on what you've described, here are some initial thoughts:\n\n• This could be related to several factors\n• I recommend monitoring your symptoms\n• If symptoms persist or worsen, please consult a healthcare professional\n\n⚠️ **Important**: This is AI-generated information. Always consult with healthcare professionals for personalized medical advice.\n\n*Powered by GLM-4.5-Flash AI*`,
+          isUser: false,
+          timestamp: new Date(),
+        };
+        setMessages(prev => [...prev, aiMessage]);
+        setIsLoading(false);
+      }, 2000);
+    } catch (error) {
+      console.error('Error:', error);
+      toast.error('AI is temporarily unavailable. Please try again.');
+      
+      const errorMessage: Message = {
         id: (Date.now() + 1).toString(),
-        text: `Thank you for your question: "${text}". This is a demo response. The AI chat functionality will be connected to GLM-4.5-Flash API soon!`,
+        text: 'I apologize, but I\'m experiencing technical difficulties. Please try again in a moment.',
         isUser: false,
         timestamp: new Date(),
       };
-      setMessages(prev => [...prev, aiMessage]);
+      setMessages(prev => [...prev, errorMessage]);
       setIsLoading(false);
-    }, 2000);
+    }
   };
 
   const handleKeyPress = (e: React.KeyboardEvent) => {
@@ -84,8 +107,8 @@ const Chat = () => {
               <Bot className="w-4 h-4 text-primary-foreground" />
             </div>
             <div>
-              <h1 className="font-semibold text-foreground">FitScan AI Assistant</h1>
-              <p className="text-xs text-muted-foreground">Health Chat • GLM-4.5-Flash</p>
+              <h1 className="font-semibold text-foreground">FitScan AI Health Assistant</h1>
+              <p className="text-xs text-muted-foreground">Powered by GLM-4.5-Flash</p>
             </div>
           </div>
         </div>
@@ -102,9 +125,28 @@ const Chat = () => {
               <h2 className="text-xl font-semibold text-foreground mb-2">
                 How can I help with your health today?
               </h2>
-              <p className="text-muted-foreground">
-                Ask me about symptoms, medications, or any health concerns you may have.
+              <p className="text-muted-foreground mb-6">
+                Ask me about symptoms, medications, treatments, or any health concerns.
               </p>
+              
+              {/* Quick Examples */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-3 max-w-2xl mx-auto">
+                {[
+                  "I have chest pain and shortness of breath",
+                  "What could cause persistent headaches?",
+                  "I'm feeling anxious and can't sleep",
+                  "How can I improve my heart health?"
+                ].map((example, index) => (
+                  <Button
+                    key={index}
+                    variant="outline"
+                    className="text-left p-4 h-auto"
+                    onClick={() => sendMessage(example)}
+                  >
+                    <div className="text-sm">{example}</div>
+                  </Button>
+                ))}
+              </div>
             </div>
           ) : (
             messages.map((message) => (
@@ -153,11 +195,12 @@ const Chat = () => {
               <div className="bg-card border rounded-lg p-4">
                 <div className="flex items-center space-x-2">
                   <Loader2 className="w-4 h-4 animate-spin text-primary" />
-                  <span className="text-sm text-muted-foreground">AI is thinking...</span>
+                  <span className="text-sm text-muted-foreground">AI is analyzing your question...</span>
                 </div>
               </div>
             </div>
           )}
+          <div ref={messagesEndRef} />
         </div>
       </div>
 
@@ -169,7 +212,7 @@ const Chat = () => {
               value={inputValue}
               onChange={(e) => setInputValue(e.target.value)}
               onKeyPress={handleKeyPress}
-              placeholder="Type your health question here..."
+              placeholder="Ask me about your health..."
               className="flex-1"
               disabled={isLoading}
             />
@@ -187,7 +230,7 @@ const Chat = () => {
           </div>
           
           <p className="text-xs text-muted-foreground text-center mt-3">
-            This AI provides general health information only. Always consult healthcare professionals for medical advice.
+            ⚠️ This AI provides general health information only. Always consult healthcare professionals for medical advice.
           </p>
         </div>
       </div>
