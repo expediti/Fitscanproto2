@@ -34,45 +34,112 @@ const Index = () => {
     <div className="min-h-screen bg-background text-foreground">
       <Navigation />
       
-      {/* AI SEARCH BAR SECTION */}
-      <section className="py-8 px-4 bg-gradient-to-b from-blue-50/50 to-transparent dark:from-blue-950/20">
-        <div className="max-w-4xl mx-auto text-center">
+      {/* PROMINENT AI SEARCH BAR - FORCED TO SHOW */}
+      <div 
+        style={{
+          backgroundColor: '#f8fafc',
+          padding: '32px 16px',
+          borderBottom: '1px solid #e2e8f0',
+          position: 'relative',
+          zIndex: 10,
+          display: 'block'
+        }}
+      >
+        <div style={{ maxWidth: '1024px', margin: '0 auto', textAlign: 'center' }}>
           {/* AI Badge */}
-          <div className="mb-4">
-            <Badge variant="outline" className="px-4 py-2 bg-blue-50 text-blue-700 border-blue-200 dark:bg-blue-950/50 dark:text-blue-300">
-              ✨ Ask anything with AI Mode
-            </Badge>
+          <div style={{ marginBottom: '16px' }}>
+            <span style={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: '8px',
+              backgroundColor: '#dbeafe',
+              color: '#1d4ed8',
+              padding: '8px 16px',
+              borderRadius: '25px',
+              fontSize: '14px',
+              fontWeight: '600',
+              border: '1px solid #bfdbfe'
+            }}>
+              ✨ Ask Your Health Questions with AI
+            </span>
           </div>
 
-          {/* Search Bar */}
+          {/* Big Prominent Search Bar */}
           <div 
-            className="relative group cursor-pointer"
+            style={{
+              backgroundColor: 'white',
+              border: '2px solid #e5e7eb',
+              borderRadius: '50px',
+              boxShadow: '0 10px 25px rgba(0,0,0,0.1)',
+              cursor: 'pointer',
+              transition: 'all 0.3s ease',
+              maxWidth: '700px',
+              margin: '0 auto'
+            }}
             onClick={handleAISearch}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.borderColor = '#3b82f6';
+              e.currentTarget.style.boxShadow = '0 15px 35px rgba(59, 130, 246, 0.15)';
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.borderColor = '#e5e7eb';
+              e.currentTarget.style.boxShadow = '0 10px 25px rgba(0,0,0,0.1)';
+            }}
           >
-            <div className="absolute -inset-1 bg-gradient-to-r from-blue-200 to-purple-200 rounded-full opacity-20 group-hover:opacity-30 transition duration-300 blur"></div>
-            
-            <div className="relative bg-white dark:bg-gray-800 border-2 border-gray-200 dark:border-gray-700 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 group-hover:border-blue-300">
-              <div className="flex items-center gap-4 px-6 py-4">
-                <Search className="w-6 h-6 text-gray-400 group-hover:text-blue-500 transition-colors flex-shrink-0" />
-                
-                <div className="flex-1 text-left text-gray-500 dark:text-gray-400 text-lg">
-                  Ask me about your health... (e.g., I have chest pain and shortness of breath)
-                </div>
-                
-                <div className="bg-gradient-to-r from-blue-500 to-purple-500 text-white rounded-full h-12 w-12 flex items-center justify-center group-hover:scale-105 transition-transform flex-shrink-0">
-                  <Search className="w-5 h-5" />
-                </div>
+            <div style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: '20px',
+              padding: '20px 28px'
+            }}>
+              <div style={{
+                width: '28px',
+                height: '28px',
+                color: '#6b7280',
+                flexShrink: 0
+              }}>
+                🔍
+              </div>
+              
+              <div style={{
+                flex: 1,
+                textAlign: 'left',
+                color: '#6b7280',
+                fontSize: '18px',
+                fontWeight: '400'
+              }}>
+                Ask me about your health... (e.g., I have chest pain and shortness of breath)
+              </div>
+              
+              <div style={{
+                background: 'linear-gradient(135deg, #3b82f6, #6366f1)',
+                borderRadius: '50%',
+                width: '50px',
+                height: '50px',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                flexShrink: 0,
+                cursor: 'pointer'
+              }}>
+                <span style={{ color: 'white', fontSize: '20px' }}>✨</span>
               </div>
             </div>
           </div>
 
-          <div className="mt-3 text-xs text-gray-500 dark:text-gray-400">
-            Powered by GLM-4.5-Flash AI
+          {/* Powered by */}
+          <div style={{ 
+            marginTop: '12px',
+            color: '#6b7280',
+            fontSize: '13px',
+            fontWeight: '500'
+          }}>
+            Powered by GLM-4.5-Flash AI • Free Health Assistant
           </div>
         </div>
-      </section>
+      </div>
 
-      {/* Tools Section */}
+      {/* Your Existing Tools Section */}
       <section className="py-8 px-4">
         <div className="max-w-7xl mx-auto">
           {/* Search and Filter */}
