@@ -34,40 +34,44 @@ const Index = () => {
     <div className="min-h-screen bg-background text-foreground">
       <Navigation />
       
-      {/* AI SEARCH BAR - SIMPLE & CLEAN */}
-      <div className="py-6 px-4 bg-gradient-to-b from-blue-50/30 to-transparent">
-        <div className="max-w-3xl mx-auto text-center">
+      {/* AI SEARCH BAR SECTION */}
+      <section className="py-8 px-4 bg-gradient-to-b from-blue-50/50 to-transparent dark:from-blue-950/20">
+        <div className="max-w-4xl mx-auto text-center">
           {/* AI Badge */}
           <div className="mb-4">
-            <Badge variant="outline" className="px-3 py-1 bg-blue-50 text-blue-700 border-blue-200">
+            <Badge variant="outline" className="px-4 py-2 bg-blue-50 text-blue-700 border-blue-200 dark:bg-blue-950/50 dark:text-blue-300">
               ✨ Ask anything with AI Mode
             </Badge>
           </div>
 
           {/* Search Bar */}
           <div 
-            className="relative bg-white border-2 border-gray-200 rounded-full shadow-lg hover:shadow-xl hover:border-blue-300 transition-all duration-300 cursor-pointer"
+            className="relative group cursor-pointer"
             onClick={handleAISearch}
           >
-            <div className="flex items-center gap-4 px-6 py-4">
-              <Search className="w-6 h-6 text-gray-400 hover:text-blue-500 transition-colors" />
-              <div className="flex-1 text-left text-gray-500 text-lg">
-                Ask me about your health... (e.g., I have chest pain and shortness of breath)
-              </div>
-              <div className="bg-gradient-to-r from-blue-500 to-purple-500 text-white rounded-full h-12 w-12 flex items-center justify-center hover:scale-105 transition-transform">
-                <Search className="w-5 h-5" />
+            <div className="absolute -inset-1 bg-gradient-to-r from-blue-200 to-purple-200 rounded-full opacity-20 group-hover:opacity-30 transition duration-300 blur"></div>
+            
+            <div className="relative bg-white dark:bg-gray-800 border-2 border-gray-200 dark:border-gray-700 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 group-hover:border-blue-300">
+              <div className="flex items-center gap-4 px-6 py-4">
+                <Search className="w-6 h-6 text-gray-400 group-hover:text-blue-500 transition-colors flex-shrink-0" />
+                
+                <div className="flex-1 text-left text-gray-500 dark:text-gray-400 text-lg">
+                  Ask me about your health... (e.g., I have chest pain and shortness of breath)
+                </div>
+                
+                <div className="bg-gradient-to-r from-blue-500 to-purple-500 text-white rounded-full h-12 w-12 flex items-center justify-center group-hover:scale-105 transition-transform flex-shrink-0">
+                  <Search className="w-5 h-5" />
+                </div>
               </div>
             </div>
           </div>
 
-          {/* Powered by */}
-          <div className="mt-3 text-xs text-gray-500">
+          <div className="mt-3 text-xs text-gray-500 dark:text-gray-400">
             Powered by GLM-4.5-Flash AI
           </div>
         </div>
-      </div>
+      </section>
 
-      {/* Compact Header */}
       {/* Tools Section */}
       <section className="py-8 px-4">
         <div className="max-w-7xl mx-auto">
@@ -128,6 +132,7 @@ const Index = () => {
           )}
         </div>
       </section>
+
       {/* Simple CTA Section */}
       <section className="py-12 px-4 bg-primary/5">
         <div className="max-w-4xl mx-auto text-center">
@@ -143,6 +148,7 @@ const Index = () => {
           </Button>
         </div>
       </section>
+
       {/* Professional Footer */}
       <footer className="bg-background border-t border-border">
         <div className="max-w-7xl mx-auto px-4 py-12">
@@ -295,6 +301,7 @@ const Index = () => {
           </div>
         </div>
       </footer>
+
       {/* Voice Health Chatbot - Floating Widget */}
       <VoiceHealthChatbot />
     </div>
