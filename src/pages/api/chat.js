@@ -22,107 +22,120 @@ export default async function handler(req, res) {
   if (!process.env.ZHIPU_API_KEY) {
     console.error('ZHIPU_API_KEY environment variable is not set');
     return res.status(500).json({
-      response: 'AI service is not configured. Please add ZHIPU_API_KEY environment variable in Vercel.'
+      response: '🔧 **DEBUG**: API key is missing. Please add ZHIPU_API_KEY to Vercel environment variables.'
     });
   }
 
   try {
-    // Build conversation context
+    // Build conversation exactly like the official example
     let messages = [
       {
-        role: 'system',
-        content: `You are FitScan's expert medical AI assistant. You provide comprehensive health guidance including:
-
-- Detailed symptom analysis and possible causes
-- Treatment recommendations and next steps
-- Medication information and interactions
-- Lifestyle and preventive care advice
-- Mental health support
-- Emergency guidance when symptoms are serious
-
-Always be empathetic, thorough, and professional. Provide detailed explanations. For serious symptoms, always advise consulting healthcare professionals immediately.`
+        role: 'user',
+        content: `You are FitScan's expert medical AI assistant. Please provide comprehensive health guidance for this question: ${message}`
       }
     ];
 
-    // Add conversation history (last 5 messages for context)
+    // Add conversation history if exists
     if (conversationHistory.length > 0) {
-      conversationHistory.slice(-5).forEach(msg => {
+      // Reset messages with proper conversation flow
+      messages = [];
+      
+      // Add system context as first user message
+      messages.push({
+        role: 'user',
+        content: 'You are FitScan\'s expert medical AI assistant. Provide detailed, empathetic health guidance including symptom analysis, treatment recommendations, and when to seek emergency care.'
+      });
+
+      // Add conversation history
+      conversationHistory.slice(-4).forEach(msg => {
         messages.push({
           role: msg.isUser ? 'user' : 'assistant',
           content: msg.text
         });
       });
+
+      // Add current message
+      messages.push({
+        role: 'user',
+        content: message
+      });
     }
 
-    // Add current message
-    messages.push({
-      role: 'user',
-      content: message
-    });
+    console.log('Calling BigModel GLM-4.5 API...');
+    console.log('API Key length:', process.env.ZHIPU_API_KEY.length);
 
-    console.log('Calling Zhipu AI GLM-4.5-Flash-Air API...');
-
-    // Call Zhipu AI GLM-4.5-Flash-Air API (CORRECT ENDPOINT)
+    // Call BigModel API with EXACT format from screenshot
     const response = await fetch('https://open.bigmodel.cn/api/paas/v4/chat/completions', {
       method: 'POST',
       headers: {
-        'Authorization': `Bearer ${process.env.ZHIPU_API_KEY}`,
         'Content-Type': 'application/json',
-        'Accept': 'application/json'
+        'Authorization': `Bearer ${process.env.ZHIPU_API_KEY}`
       },
       body: JSON.stringify({
-        model: 'glm-4.5-flash-air',  // CORRECT MODEL NAME
+        model: 'glm-4.5',  // EXACT model name from screenshot
         messages: messages,
-        max_tokens: 2000,
-        temperature: 0.7,
-        top_p: 0.9,
-        stream: false
+        max_tokens: 4096,  // EXACT value from screenshot
+        temperature: 0.6   // EXACT value from screenshot
       })
     });
 
-    console.log('API Response Status:', response.status);
+    console.log('BigModel API Response Status:', response.status);
 
     if (!response.ok) {
       const errorText = await response.text();
-      console.error(`Zhipu AI API Error: ${response.status} - ${errorText}`);
+      console.error(`BigModel API Error: ${response.status} - ${errorText}`);
       
-      // Handle specific error codes
+      // Detailed error handling
       if (response.status === 401) {
         return res.status(500).json({
-          response: 'API authentication failed. Please check if the API key is valid and active.'
+          response: `🚨 **API KEY ERROR**: Authentication failed (401). 
+          
+Your API key might be invalid. Please:
+1. Go to BigModel dashboard
+2. Copy the FULL API key (starts with your current: d788...c7Bx)
+3. Add it to Vercel as ZHIPU_API_KEY
+4. Redeploy
+
+Current API key length: ${process.env.ZHIPU_API_KEY.length} characters`
         });
       } else if (response.status === 429) {
         return res.status(500).json({
-          response: 'The AI service is currently experiencing high demand. Please wait a moment and try again.'
+          response: 'Rate limit exceeded. Please wait a moment and try again.'
         });
       } else if (response.status === 400) {
         return res.status(500).json({
-          response: 'There was an error with the request format. Please try again.'
+          response: `Bad Request (400): ${errorText}`
         });
       }
       
-      throw new Error(`API Error: ${response.status}`);
+      return res.status(500).json({
+        response: `API Error ${response.status}: ${errorText}`
+      });
     }
 
     const data = await response.json();
-    console.log('Zhipu AI API Success!');
+    console.log('BigModel API Success!');
 
     if (!data.choices || !data.choices[0] || !data.choices[0].message) {
       console.error('Invalid API response format:', data);
-      throw new Error('Invalid response format from Zhipu AI');
+      return res.status(500).json({
+        response: `⚠️ Invalid response format: ${JSON.stringify(data)}`
+      });
     }
 
     let aiResponse = data.choices[0].message.content;
 
     if (!aiResponse || aiResponse.trim().length === 0) {
-      throw new Error('Empty response from AI');
+      return res.status(500).json({
+        response: '⚠️ Empty response from AI. Please try again.'
+      });
     }
 
     // Clean up the response
     aiResponse = aiResponse.trim();
 
-    // Add medical disclaimers for safety
-    const emergencyKeywords = ['chest pain', 'difficulty breathing', 'severe pain', 'emergency', 'urgent', 'blood', 'unconscious', 'stroke', 'heart attack', 'suicide', 'overdose'];
+    // Add emergency warnings for serious symptoms
+    const emergencyKeywords = ['chest pain', 'difficulty breathing', 'severe pain', 'emergency', 'urgent', 'blood', 'unconscious', 'stroke', 'heart attack'];
     const hasEmergency = emergencyKeywords.some(keyword => 
       aiResponse.toLowerCase().includes(keyword) || message.toLowerCase().includes(keyword)
     );
@@ -131,36 +144,27 @@ Always be empathetic, thorough, and professional. Provide detailed explanations.
       aiResponse += '\n\n🚨 **EMERGENCY NOTICE**: If you are experiencing severe symptoms or this is a medical emergency, please call emergency services (911/999) immediately or visit your nearest emergency room.';
     }
 
-    // Add general medical disclaimer
-    if (!aiResponse.includes('healthcare professional') && !aiResponse.includes('doctor') && !aiResponse.includes('medical professional')) {
-      aiResponse += '\n\n💡 *Important: This is AI-generated health information for educational purposes. Always consult with qualified healthcare professionals for personalized medical advice and diagnosis.*';
-    }
+    // Add medical disclaimer
+    aiResponse += '\n\n💡 *Important: This is AI-generated health information for educational purposes. Always consult with qualified healthcare professionals for personalized medical advice and diagnosis.*';
 
     return res.status(200).json({
       response: aiResponse,
-      model: 'glm-4.5-flash-air',
-      timestamp: new Date().toISOString()
+      model: 'GLM-4.5 (BigModel)',
+      timestamp: new Date().toISOString(),
+      debug: {
+        apiKeySet: true,
+        responseLength: aiResponse.length,
+        success: true
+      }
     });
 
   } catch (error) {
-    console.error('Zhipu AI API Error:', error);
-
-    // Provide helpful error messages based on error type
-    let errorMessage = 'I apologize, but I\'m experiencing technical difficulties connecting to the AI service. Please try again in a moment.';
-    
-    if (error.message.includes('timeout')) {
-      errorMessage = 'The AI service is taking longer than usual to respond. Please try asking your question again.';
-    } else if (error.message.includes('network') || error.message.includes('fetch')) {
-      errorMessage = 'There\'s a temporary network issue. Please check your connection and try again.';
-    } else if (error.message.includes('401')) {
-      errorMessage = 'The AI service authentication has failed. Please contact support if this persists.';
-    } else if (error.message.includes('429')) {
-      errorMessage = 'The AI service is currently busy. Please wait a moment and try again.';
-    }
+    console.error('BigModel API Error:', error);
 
     return res.status(500).json({
-      error: 'Failed to get AI response',
-      response: errorMessage
+      response: `💥 **UNEXPECTED ERROR**: ${error.message}
+
+Please try again. If the error persists, the API service might be temporarily unavailable.`
     });
   }
 }
