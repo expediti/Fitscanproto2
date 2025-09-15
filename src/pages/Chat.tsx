@@ -1,10 +1,8 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect } from 'react';
 import { useSearchParams, useNavigate } from 'react-router-dom';
-import { Send, Bot, User, ArrowLeft, Loader2, Sparkles, Home } from 'lucide-react';
+import { ArrowLeft, Send, Bot, User, Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Card } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
 import Navigation from '@/components/Navigation';
 import toast from 'react-hot-toast';
 
@@ -21,21 +19,11 @@ const Chat = () => {
   const [messages, setMessages] = useState<Message[]>([]);
   const [inputValue, setInputValue] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-  const messagesEndRef = useRef<HTMLDivElement>(null);
-
-  const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-  };
-
-  useEffect(() => {
-    scrollToBottom();
-  }, [messages]);
 
   useEffect(() => {
     const initialQuery = searchParams.get('q');
     if (initialQuery) {
       setInputValue(initialQuery);
-      // Auto-send the initial query
       setTimeout(() => sendMessage(initialQuery), 500);
     }
   }, [searchParams]);
@@ -55,43 +43,17 @@ const Chat = () => {
     setInputValue('');
     setIsLoading(true);
 
-    try {
-      const response = await fetch('/api/chat', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          message: text,
-          conversationHistory: messages.slice(-5),
-        }),
-      });
-
-      if (!response.ok) throw new Error('Failed to get AI response');
-      const data = await response.json();
-      
+    // Simulate AI response (replace with actual API call)
+    setTimeout(() => {
       const aiMessage: Message = {
         id: (Date.now() + 1).toString(),
-        text: data.response,
+        text: `Thank you for your question: "${text}". This is a demo response. The AI chat functionality will be connected to GLM-4.5-Flash API soon!`,
         isUser: false,
         timestamp: new Date(),
       };
-
       setMessages(prev => [...prev, aiMessage]);
-    } catch (error) {
-      console.error('Error:', error);
-      toast.error('AI is temporarily unavailable. Please try again.');
-      
-      const errorMessage: Message = {
-        id: (Date.now() + 1).toString(),
-        text: 'I apologize, but I\'m experiencing technical difficulties. Please try again in a moment.',
-        isUser: false,
-        timestamp: new Date(),
-      };
-      setMessages(prev => [...prev, errorMessage]);
-    } finally {
       setIsLoading(false);
-    }
+    }, 2000);
   };
 
   const handleKeyPress = (e: React.KeyboardEvent) => {
@@ -101,49 +63,31 @@ const Chat = () => {
     }
   };
 
-  const newChat = () => {
-    setMessages([]);
-    setInputValue('');
-  };
-
   return (
-    <div className="h-screen bg-gray-50 dark:bg-gray-900 flex flex-col">
+    <div className="h-screen bg-background flex flex-col">
       <Navigation />
       
       {/* Header */}
-      <div className="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 px-4 py-3 shadow-sm">
-        <div className="flex items-center justify-between max-w-4xl mx-auto">
+      <div className="bg-background border-b border-border px-4 py-3">
+        <div className="flex items-center gap-3 max-w-4xl mx-auto">
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() => navigate('/')}
+            className="text-muted-foreground hover:text-foreground"
+          >
+            <ArrowLeft className="w-4 h-4 mr-2" />
+            Back to Home
+          </Button>
           <div className="flex items-center gap-3">
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={() => navigate('/')}
-              className="text-gray-500 hover:text-gray-700 dark:hover:text-gray-300"
-            >
-              <ArrowLeft className="w-4 h-4 mr-2" />
-              Back to Home
-            </Button>
-            <div className="flex items-center gap-3">
-              <div className="w-8 h-8 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full flex items-center justify-center">
-                <Bot className="w-4 h-4 text-white" />
-              </div>
-              <div>
-                <h1 className="font-semibold text-gray-900 dark:text-white">FitScan AI Health Assistant</h1>
-                <Badge variant="secondary" className="text-xs bg-green-100 text-green-700 border-green-200">
-                  <Sparkles className="w-3 h-3 mr-1" />
-                  GLM-4.5-Flash
-                </Badge>
-              </div>
+            <div className="w-8 h-8 bg-primary rounded-full flex items-center justify-center">
+              <Bot className="w-4 h-4 text-primary-foreground" />
+            </div>
+            <div>
+              <h1 className="font-semibold text-foreground">FitScan AI Assistant</h1>
+              <p className="text-xs text-muted-foreground">Health Chat • GLM-4.5-Flash</p>
             </div>
           </div>
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={newChat}
-            className="text-gray-600 dark:text-gray-300"
-          >
-            New Chat
-          </Button>
         </div>
       </div>
 
@@ -152,34 +96,15 @@ const Chat = () => {
         <div className="max-w-4xl mx-auto px-4 py-6 space-y-6">
           {messages.length === 0 && !isLoading ? (
             <div className="text-center py-16">
-              <div className="w-20 h-20 bg-gradient-to-r from-blue-100 to-purple-100 dark:from-blue-900/20 dark:to-purple-900/20 rounded-full flex items-center justify-center mx-auto mb-6">
-                <Bot className="w-10 h-10 text-blue-600 dark:text-blue-400" />
+              <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4">
+                <Bot className="w-8 h-8 text-primary" />
               </div>
-              <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-3">
+              <h2 className="text-xl font-semibold text-foreground mb-2">
                 How can I help with your health today?
               </h2>
-              <p className="text-gray-600 dark:text-gray-400 mb-8 max-w-md mx-auto">
-                Ask me about symptoms, medications, treatments, or any health concerns you may have.
+              <p className="text-muted-foreground">
+                Ask me about symptoms, medications, or any health concerns you may have.
               </p>
-              
-              {/* Quick Suggestions */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-3 max-w-2xl mx-auto">
-                {[
-                  "I have chest pain and shortness of breath",
-                  "What could cause persistent headaches?",
-                  "I'm feeling anxious and can't sleep well",
-                  "How can I improve my heart health?"
-                ].map((suggestion, index) => (
-                  <Button
-                    key={index}
-                    variant="outline"
-                    className="text-left p-4 h-auto border-gray-200 hover:border-blue-300 hover:bg-blue-50 dark:hover:bg-blue-900/20"
-                    onClick={() => sendMessage(suggestion)}
-                  >
-                    <div className="text-sm">{suggestion}</div>
-                  </Button>
-                ))}
-              </div>
             </div>
           ) : (
             messages.map((message) => (
@@ -188,22 +113,22 @@ const Chat = () => {
                 className={`flex gap-4 ${message.isUser ? 'justify-end' : 'justify-start'}`}
               >
                 {!message.isUser && (
-                  <div className="w-10 h-10 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full flex items-center justify-center flex-shrink-0 shadow-md">
-                    <Bot className="w-5 h-5 text-white" />
+                  <div className="w-8 h-8 bg-primary rounded-full flex items-center justify-center flex-shrink-0">
+                    <Bot className="w-4 h-4 text-primary-foreground" />
                   </div>
                 )}
                 
                 <div className={`max-w-[80%] ${message.isUser ? 'order-first' : ''}`}>
-                  <Card className={`p-4 shadow-sm ${
+                  <div className={`p-4 rounded-lg ${
                     message.isUser 
-                      ? 'bg-blue-600 text-white border-blue-600' 
-                      : 'bg-white dark:bg-gray-800 text-gray-900 dark:text-white border-gray-200 dark:border-gray-700'
+                      ? 'bg-primary text-primary-foreground' 
+                      : 'bg-card text-card-foreground border'
                   }`}>
                     <div className="text-sm leading-relaxed whitespace-pre-wrap">
                       {message.text}
                     </div>
-                  </Card>
-                  <p className="text-xs text-gray-500 dark:text-gray-400 mt-2 px-2">
+                  </div>
+                  <p className="text-xs text-muted-foreground mt-1 px-2">
                     {message.timestamp.toLocaleTimeString([], {
                       hour: '2-digit',
                       minute: '2-digit',
@@ -212,8 +137,8 @@ const Chat = () => {
                 </div>
                 
                 {message.isUser && (
-                  <div className="w-10 h-10 bg-gradient-to-r from-green-500 to-emerald-500 rounded-full flex items-center justify-center flex-shrink-0 shadow-md">
-                    <User className="w-5 h-5 text-white" />
+                  <div className="w-8 h-8 bg-green-600 rounded-full flex items-center justify-center flex-shrink-0">
+                    <User className="w-4 h-4 text-white" />
                   </div>
                 )}
               </div>
@@ -222,23 +147,22 @@ const Chat = () => {
           
           {isLoading && (
             <div className="flex gap-4">
-              <div className="w-10 h-10 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full flex items-center justify-center flex-shrink-0 shadow-md">
-                <Bot className="w-5 h-5 text-white" />
+              <div className="w-8 h-8 bg-primary rounded-full flex items-center justify-center flex-shrink-0">
+                <Bot className="w-4 h-4 text-primary-foreground" />
               </div>
-              <Card className="p-4 bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 shadow-sm">
-                <div className="flex items-center space-x-3">
-                  <Loader2 className="w-5 h-5 animate-spin text-blue-600" />
-                  <span className="text-sm text-gray-600 dark:text-gray-400">AI is analyzing your question...</span>
+              <div className="bg-card border rounded-lg p-4">
+                <div className="flex items-center space-x-2">
+                  <Loader2 className="w-4 h-4 animate-spin text-primary" />
+                  <span className="text-sm text-muted-foreground">AI is thinking...</span>
                 </div>
-              </Card>
+              </div>
             </div>
           )}
-          <div ref={messagesEndRef} />
         </div>
       </div>
 
       {/* Input Area */}
-      <div className="bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700 p-4 shadow-lg">
+      <div className="bg-background border-t border-border p-4">
         <div className="max-w-4xl mx-auto">
           <div className="flex gap-3">
             <Input
@@ -246,13 +170,13 @@ const Chat = () => {
               onChange={(e) => setInputValue(e.target.value)}
               onKeyPress={handleKeyPress}
               placeholder="Type your health question here..."
-              className="flex-1 border-gray-300 dark:border-gray-600 focus:border-blue-500 py-3 text-base"
+              className="flex-1"
               disabled={isLoading}
             />
             <Button
               onClick={() => sendMessage()}
               disabled={!inputValue.trim() || isLoading}
-              className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3"
+              className="px-6"
             >
               {isLoading ? (
                 <Loader2 className="w-4 h-4 animate-spin" />
@@ -262,12 +186,9 @@ const Chat = () => {
             </Button>
           </div>
           
-          {/* Medical Disclaimer */}
-          <div className="mt-3 text-center">
-            <p className="text-xs text-gray-500 dark:text-gray-400">
-              ⚠️ This AI provides general health information only. Always consult healthcare professionals for medical advice.
-            </p>
-          </div>
+          <p className="text-xs text-muted-foreground text-center mt-3">
+            This AI provides general health information only. Always consult healthcare professionals for medical advice.
+          </p>
         </div>
       </div>
     </div>
