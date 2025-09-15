@@ -1,4 +1,13 @@
 export default async function handler(req, res) {
+  // Set CORS headers
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+
+  if (req.method === 'OPTIONS') {
+    return res.status(200).end();
+  }
+
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method not allowed' });
   }
@@ -73,6 +82,7 @@ For emergency symptoms (chest pain, difficulty breathing, severe injuries, etc.)
     const data = await response.json();
 
     if (!data.choices || !data.choices[0] || !data.choices[0].message) {
+      console.error('Invalid response format:', data);
       throw new Error('Invalid response format from GLM-4.5-Flash');
     }
 
@@ -82,12 +92,13 @@ For emergency symptoms (chest pain, difficulty breathing, severe injuries, etc.)
     aiResponse = aiResponse.trim();
 
     // Add medical disclaimer for serious topics
-    if (aiResponse.toLowerCase().includes('serious') || 
-        aiResponse.toLowerCase().includes('emergency') ||
-        aiResponse.toLowerCase().includes('urgent') ||
-        aiResponse.toLowerCase().includes('chest pain') ||
-        aiResponse.toLowerCase().includes('difficulty breathing')) {
-      aiResponse += '\n\n⚠️ **Important**: Please consult a healthcare professional immediately for serious medical concerns or emergencies.';
+    const emergencyKeywords = ['serious', 'emergency', 'urgent', 'chest pain', 'difficulty breathing', 'severe pain', 'blood', 'unconscious'];
+    const hasEmergencyContent = emergencyKeywords.some(keyword => 
+      aiResponse.toLowerCase().includes(keyword) || message.toLowerCase().includes(keyword)
+    );
+
+    if (hasEmergencyContent) {
+      aiResponse += '\n\n🚨 **Emergency Notice**: If you are experiencing severe symptoms, please call emergency services immediately or visit the nearest emergency room.';
     }
 
     // Add general medical disclaimer if not already included
@@ -95,7 +106,10 @@ For emergency symptoms (chest pain, difficulty breathing, severe injuries, etc.)
       aiResponse += '\n\n💡 *Remember: This is general health information. Always consult with healthcare professionals for personalized medical advice.*';
     }
 
-    return res.status(200).json({ response: aiResponse });
+    return res.status(200).json({ 
+      response: aiResponse,
+      timestamp: new Date().toISOString()
+    });
 
   } catch (error) {
     console.error('GLM-4.5-Flash Chat API Error:', error);
@@ -109,6 +123,8 @@ For emergency symptoms (chest pain, difficulty breathing, severe injuries, etc.)
       errorMessage = 'I\'m receiving too many requests right now. Please wait a moment and try again.';
     } else if (error.message.includes('timeout')) {
       errorMessage = 'The request timed out. Please try again with a shorter message.';
+    } else if (error.message.includes('500')) {
+      errorMessage = 'The AI service is temporarily unavailable. Please try again in a few minutes.';
     }
 
     return res.status(500).json({ 
