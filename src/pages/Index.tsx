@@ -214,38 +214,61 @@ const Index = () => {
         </div>
       </section>
 
-      {/* Minimal Footer */}
-      <footer className="border-t border-border px-4 py-6">
-        <div className="max-w-4xl mx-auto">
-          <div className="flex flex-col md:flex-row justify-between items-center gap-4">
-            <div className="flex items-center gap-2">
-              <Heart className="h-4 w-4 text-primary" />
-              <span className="text-sm font-medium text-foreground">FitScan</span>
-            </div>
-            
-            <div className="flex items-center gap-4 text-xs text-muted-foreground">
-              <button onClick={() => navigate("/about")}>About</button>
-              <button onClick={() => navigate("/chat")}>AI Chat</button>
-              <a href="mailto:hollyman2313@gmail.com">Contact</a>
-            </div>
-          </div>
-          
-          <div className="text-center mt-4 text-xs text-muted-foreground">
-            © 2025 FitScan • Developed by{" "}
-            <a
-              href="https://www.instagram.com/broxgit"
-              target="_blank"
-              className="text-primary hover:underline"
-            >
-              BroxGit
-            </a>
-          </div>
-        </div>
-      </footer>
+{/* Footer with Icons */}
+<footer className="border-t border-border px-4 py-8">
+  <div className="max-w-4xl mx-auto">
+    <div className="flex flex-col md:flex-row justify-between items-center gap-6">
+      <div className="flex items-center gap-2">
+        <Heart className="h-5 w-5 text-primary" />
+        <span className="text-lg font-semibold text-foreground">FitScan</span>
+      </div>
+      
+      <div className="flex items-center gap-6 text-sm text-muted-foreground">
+        <button onClick={() => navigate("/about")} className="hover:text-primary transition-colors">
+          About
+        </button>
+        <button onClick={() => navigate("/chat")} className="hover:text-primary transition-colors">
+          AI Chat
+        </button>
+        <button onClick={() => navigate("/blog")} className="hover:text-primary transition-colors">
+          Blog
+        </button>
+      </div>
 
-      <VoiceHealthChatbot />
+      {/* Social Icons */}
+      <div className="flex items-center gap-4">
+        <a
+          href="mailto:hollyman2313@gmail.com"
+          className="p-2 rounded-full bg-primary/10 text-primary hover:bg-primary/20 transition-colors"
+          aria-label="Email"
+        >
+          <Mail className="h-4 w-4" />
+        </a>
+        <a
+          href="https://www.instagram.com/broxgit?igsh=MXNyMXFzM3VyNXB6eA=="
+          target="_blank"
+          rel="noopener noreferrer"
+          className="p-2 rounded-full bg-primary/10 text-primary hover:bg-primary/20 transition-colors"
+          aria-label="Instagram"
+        >
+          <Instagram className="h-4 w-4" />
+        </a>
+      </div>
     </div>
-  );
-};
+    
+    <div className="text-center mt-6 pt-4 border-t border-border text-sm text-muted-foreground">
+      © 2025 FitScan • Developed by{" "}
+      <a
+        href="https://www.instagram.com/broxgit?igsh=MXNyMXFzM3VyNXB6eA=="
+        target="_blank"
+        rel="noopener noreferrer"
+        className="font-semibold text-primary hover:text-primary/80 transition-colors"
+      >
+        BroxGit
+      </a>
+    </div>
+  </div>
+</footer>
+
 
 export default Index;
