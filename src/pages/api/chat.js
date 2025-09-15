@@ -18,120 +18,149 @@ export default async function handler(req, res) {
     return res.status(400).json({ error: 'Message is required' });
   }
 
-  // Debug: Check if API key exists
-  const apiKeyExists = !!process.env.ZAI_API_KEY;
-  const apiKeyLength = process.env.ZAI_API_KEY ? process.env.ZAI_API_KEY.length : 0;
-  
-  console.log('=== API DEBUG ===');
-  console.log('API Key exists:', apiKeyExists);
-  console.log('API Key length:', apiKeyLength);
-  console.log('Message received:', message);
-
-  if (!process.env.ZAI_API_KEY) {
+  // Check if API key exists
+  if (!process.env.ZHIPU_API_KEY) {
+    console.error('ZHIPU_API_KEY environment variable is not set');
     return res.status(500).json({
-      response: `🔧 **DEBUG**: API key is missing from environment variables. 
-      
-Please add ZAI_API_KEY to Vercel environment variables:
-1. Go to Vercel Dashboard → Settings → Environment Variables  
-2. Add: ZAI_API_KEY = e588c5f234cd43a8b6ecbede8b1b1d60.rr2LO5reBjaC7YnM
-3. Redeploy the project
-
-Current status: API key exists = ${apiKeyExists}, length = ${apiKeyLength}`
+      response: 'AI service is not configured. Please add ZHIPU_API_KEY environment variable in Vercel.'
     });
   }
 
   try {
-    console.log('Attempting API call to GLM-4.5-Flash...');
+    // Build conversation context
+    let messages = [
+      {
+        role: 'system',
+        content: `You are FitScan's expert medical AI assistant. You provide comprehensive health guidance including:
 
-    const response = await fetch('https://api.z.ai/api/paas/v4/chat/completions', {
+- Detailed symptom analysis and possible causes
+- Treatment recommendations and next steps
+- Medication information and interactions
+- Lifestyle and preventive care advice
+- Mental health support
+- Emergency guidance when symptoms are serious
+
+Always be empathetic, thorough, and professional. Provide detailed explanations. For serious symptoms, always advise consulting healthcare professionals immediately.`
+      }
+    ];
+
+    // Add conversation history (last 5 messages for context)
+    if (conversationHistory.length > 0) {
+      conversationHistory.slice(-5).forEach(msg => {
+        messages.push({
+          role: msg.isUser ? 'user' : 'assistant',
+          content: msg.text
+        });
+      });
+    }
+
+    // Add current message
+    messages.push({
+      role: 'user',
+      content: message
+    });
+
+    console.log('Calling Zhipu AI GLM-4.5-Flash-Air API...');
+
+    // Call Zhipu AI GLM-4.5-Flash-Air API (CORRECT ENDPOINT)
+    const response = await fetch('https://open.bigmodel.cn/api/paas/v4/chat/completions', {
       method: 'POST',
       headers: {
-        'Authorization': `Bearer ${process.env.ZAI_API_KEY}`,
+        'Authorization': `Bearer ${process.env.ZHIPU_API_KEY}`,
         'Content-Type': 'application/json',
         'Accept': 'application/json'
       },
       body: JSON.stringify({
-        model: 'glm-4.5-flash',
-        messages: [
-          {
-            role: 'system',
-            content: 'You are a helpful medical AI assistant. Provide detailed, empathetic health guidance.'
-          },
-          {
-            role: 'user',
-            content: message
-          }
-        ],
-        max_tokens: 1000,
+        model: 'glm-4.5-flash-air',  // CORRECT MODEL NAME
+        messages: messages,
+        max_tokens: 2000,
         temperature: 0.7,
+        top_p: 0.9,
         stream: false
       })
     });
 
     console.log('API Response Status:', response.status);
-    console.log('API Response Headers:', Object.fromEntries(response.headers.entries()));
 
     if (!response.ok) {
       const errorText = await response.text();
-      console.error('API Error Response:', errorText);
+      console.error(`Zhipu AI API Error: ${response.status} - ${errorText}`);
       
-      return res.status(500).json({
-        response: `🚨 **API ERROR**: 
-        
-Status: ${response.status}
-Error: ${errorText}
-
-This suggests the API key might be invalid or expired. Please check:
-1. API key is correctly set in Vercel environment variables
-2. API key is valid and active
-3. Try getting a new API key from z.ai if needed
-
-Debug info: Response status = ${response.status}`
-      });
+      // Handle specific error codes
+      if (response.status === 401) {
+        return res.status(500).json({
+          response: 'API authentication failed. Please check if the API key is valid and active.'
+        });
+      } else if (response.status === 429) {
+        return res.status(500).json({
+          response: 'The AI service is currently experiencing high demand. Please wait a moment and try again.'
+        });
+      } else if (response.status === 400) {
+        return res.status(500).json({
+          response: 'There was an error with the request format. Please try again.'
+        });
+      }
+      
+      throw new Error(`API Error: ${response.status}`);
     }
 
     const data = await response.json();
-    console.log('API Success! Response received');
+    console.log('Zhipu AI API Success!');
 
     if (!data.choices || !data.choices[0] || !data.choices[0].message) {
-      console.error('Invalid response format:', data);
-      return res.status(500).json({
-        response: `⚠️ **RESPONSE ERROR**: Got response from API but format is invalid.
-        
-Response data: ${JSON.stringify(data, null, 2)}`
-      });
+      console.error('Invalid API response format:', data);
+      throw new Error('Invalid response format from Zhipu AI');
     }
 
-    let aiResponse = data.choices[0].message.content.trim();
+    let aiResponse = data.choices[0].message.content;
 
-    // Add emergency notice for chest pain
-    if (message.toLowerCase().includes('chest pain')) {
-      aiResponse += '\n\n🚨 **EMERGENCY NOTICE**: Chest pain can be serious. If you are experiencing severe chest pain, difficulty breathing, or other concerning symptoms, please call emergency services (911) immediately or visit your nearest emergency room.';
+    if (!aiResponse || aiResponse.trim().length === 0) {
+      throw new Error('Empty response from AI');
     }
 
-    // Add disclaimer
-    aiResponse += '\n\n💡 *This is AI-generated health information. Always consult healthcare professionals for personalized medical advice.*';
+    // Clean up the response
+    aiResponse = aiResponse.trim();
+
+    // Add medical disclaimers for safety
+    const emergencyKeywords = ['chest pain', 'difficulty breathing', 'severe pain', 'emergency', 'urgent', 'blood', 'unconscious', 'stroke', 'heart attack', 'suicide', 'overdose'];
+    const hasEmergency = emergencyKeywords.some(keyword => 
+      aiResponse.toLowerCase().includes(keyword) || message.toLowerCase().includes(keyword)
+    );
+
+    if (hasEmergency) {
+      aiResponse += '\n\n🚨 **EMERGENCY NOTICE**: If you are experiencing severe symptoms or this is a medical emergency, please call emergency services (911/999) immediately or visit your nearest emergency room.';
+    }
+
+    // Add general medical disclaimer
+    if (!aiResponse.includes('healthcare professional') && !aiResponse.includes('doctor') && !aiResponse.includes('medical professional')) {
+      aiResponse += '\n\n💡 *Important: This is AI-generated health information for educational purposes. Always consult with qualified healthcare professionals for personalized medical advice and diagnosis.*';
+    }
 
     return res.status(200).json({
       response: aiResponse,
-      model: 'glm-4.5-flash',
-      timestamp: new Date().toISOString(),
-      debug: {
-        apiKeySet: true,
-        messageLength: message.length,
-        success: true
-      }
+      model: 'glm-4.5-flash-air',
+      timestamp: new Date().toISOString()
     });
 
   } catch (error) {
-    console.error('Unexpected error:', error);
-    
-    return res.status(500).json({
-      response: `💥 **UNEXPECTED ERROR**: ${error.message}
-      
-Stack: ${error.stack}
+    console.error('Zhipu AI API Error:', error);
 
-This is likely a network or API issue. Please try again in a moment.`
+    // Provide helpful error messages based on error type
+    let errorMessage = 'I apologize, but I\'m experiencing technical difficulties connecting to the AI service. Please try again in a moment.';
+    
+    if (error.message.includes('timeout')) {
+      errorMessage = 'The AI service is taking longer than usual to respond. Please try asking your question again.';
+    } else if (error.message.includes('network') || error.message.includes('fetch')) {
+      errorMessage = 'There\'s a temporary network issue. Please check your connection and try again.';
+    } else if (error.message.includes('401')) {
+      errorMessage = 'The AI service authentication has failed. Please contact support if this persists.';
+    } else if (error.message.includes('429')) {
+      errorMessage = 'The AI service is currently busy. Please wait a moment and try again.';
+    }
+
+    return res.status(500).json({
+      error: 'Failed to get AI response',
+      response: errorMessage
     });
   }
 }
