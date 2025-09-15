@@ -34,8 +34,8 @@ const Index = () => {
     <div className="min-h-screen bg-background text-foreground">
       <Navigation />
       
-      {/* AI SEARCH BAR - VISIBLE TO EVERYONE */}
-      <section className="w-full bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-950/50 dark:to-indigo-950/50 py-12 px-4">
+      {/* AI SEARCH BAR - SHOWS FOR EVERYONE */}
+      <div className="w-full bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-950/50 dark:to-indigo-950/50 py-16 px-4">
         <div className="max-w-6xl mx-auto text-center">
           {/* AI Badge */}
           <div className="mb-6">
@@ -45,7 +45,7 @@ const Index = () => {
           </div>
           
           {/* Title */}
-          <h1 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-4">
+          <h1 className="text-3xl md:text-5xl font-bold text-gray-900 dark:text-white mb-4">
             Get Instant Health Answers with AI
           </h1>
           <p className="text-lg text-gray-600 dark:text-gray-300 mb-8 max-w-2xl mx-auto">
@@ -55,7 +55,7 @@ const Index = () => {
 
           {/* PROMINENT SEARCH BAR */}
           <div 
-            className="max-w-4xl mx-auto mb-6 cursor-pointer group"
+            className="max-w-4xl mx-auto mb-8 cursor-pointer group"
             onClick={handleAISearch}
           >
             <div className="relative">
@@ -95,7 +95,7 @@ const Index = () => {
             </div>
           </div>
         </div>
-      </section>
+      </div>
 
       {/* Tools Section */}
       <section className="py-8 px-4">
