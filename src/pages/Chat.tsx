@@ -120,7 +120,7 @@ const Chat = () => {
             </div>
             <div>
               <h1 className="font-semibold text-foreground">FitScan AI Health Assistant</h1>
-              <p className="text-xs text-muted-foreground">Powered by GLM-4.5-Flash</p>
+              <p className="text-xs text-muted-foreground">Powered by Advanced AI</p>
             </div>
           </div>
         </div>
