@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Search, ChevronRight, Mail, Instagram, Heart, Globe, Sparkles } from "lucide-react";
+import { Search, ChevronRight, Mail, Instagram, Heart, Globe } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
@@ -12,7 +12,6 @@ import { healthTools, categories } from "@/data/tools";
 const Index = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("All");
-  const [aiQuery, setAiQuery] = useState("");
   const navigate = useNavigate();
 
   const filteredTools = healthTools.filter((tool) => {
@@ -28,69 +27,45 @@ const Index = () => {
   };
 
   const handleAISearch = () => {
-    if (aiQuery.trim()) {
-      navigate(`/chat?q=${encodeURIComponent(aiQuery.trim())}`);
-    } else {
-      navigate('/chat');
-    }
-  };
-
-  const handleAIKeyPress = (e: React.KeyboardEvent) => {
-    if (e.key === 'Enter') {
-      handleAISearch();
-    }
+    navigate('/chat');
   };
 
   return (
     <div className="min-h-screen bg-background text-foreground">
       <Navigation />
       
-      {/* AI Search Bar - ONLY ADDITION */}
-      <section className="py-6 px-4 bg-gradient-to-b from-blue-50/50 to-transparent dark:from-blue-950/20 dark:to-transparent">
-        <div className="max-w-4xl mx-auto">
+      {/* AI SEARCH BAR - SIMPLE & CLEAN */}
+      <div className="py-6 px-4 bg-gradient-to-b from-blue-50/30 to-transparent">
+        <div className="max-w-3xl mx-auto text-center">
           {/* AI Badge */}
-          <div className="text-center mb-4">
-            <Badge variant="secondary" className="px-4 py-2 bg-blue-50 text-blue-700 border-blue-200 dark:bg-blue-950/50 dark:text-blue-300 dark:border-blue-800">
-              <Sparkles className="w-4 h-4 mr-2" />
-              Ask anything with AI Mode
+          <div className="mb-4">
+            <Badge variant="outline" className="px-3 py-1 bg-blue-50 text-blue-700 border-blue-200">
+              ✨ Ask anything with AI Mode
             </Badge>
           </div>
 
-          {/* Premium Search Bar */}
-          <div className="relative group cursor-pointer" onClick={handleAISearch}>
-            {/* Subtle glow effect */}
-            <div className="absolute -inset-1 bg-gradient-to-r from-blue-200 via-purple-200 to-pink-200 rounded-full opacity-20 group-hover:opacity-30 transition duration-500 blur"></div>
-            
-            <div className="relative bg-white dark:bg-gray-800 border-2 border-gray-200 dark:border-gray-700 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 group-hover:border-blue-300 dark:group-hover:border-blue-600">
-              <div className="flex items-center gap-4 px-6 py-4">
-                <Search className="w-6 h-6 text-gray-400 dark:text-gray-500 group-hover:text-blue-500 transition-colors flex-shrink-0" />
-                <Input
-                  value={aiQuery}
-                  onChange={(e) => setAiQuery(e.target.value)}
-                  onKeyPress={handleAIKeyPress}
-                  onFocus={handleAISearch}
-                  placeholder="Ask me about your health... (e.g., I have chest pain and shortness of breath)"
-                  className="flex-1 border-0 bg-transparent text-gray-900 dark:text-white placeholder-gray-500 text-lg focus:ring-0 focus-visible:ring-0 cursor-pointer"
-                  readOnly
-                />
-                <div 
-                  className="bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 text-white rounded-full h-12 w-12 flex items-center justify-center transition-all duration-200 group-hover:scale-105 flex-shrink-0 cursor-pointer"
-                  onClick={handleAISearch}
-                >
-                  <Sparkles className="w-5 h-5" />
-                </div>
+          {/* Search Bar */}
+          <div 
+            className="relative bg-white border-2 border-gray-200 rounded-full shadow-lg hover:shadow-xl hover:border-blue-300 transition-all duration-300 cursor-pointer"
+            onClick={handleAISearch}
+          >
+            <div className="flex items-center gap-4 px-6 py-4">
+              <Search className="w-6 h-6 text-gray-400 hover:text-blue-500 transition-colors" />
+              <div className="flex-1 text-left text-gray-500 text-lg">
+                Ask me about your health... (e.g., I have chest pain and shortness of breath)
+              </div>
+              <div className="bg-gradient-to-r from-blue-500 to-purple-500 text-white rounded-full h-12 w-12 flex items-center justify-center hover:scale-105 transition-transform">
+                <Search className="w-5 h-5" />
               </div>
             </div>
           </div>
 
-          {/* Powered by GLM */}
-          <div className="text-center mt-3">
-            <span className="text-xs text-gray-500 dark:text-gray-400">
-              Powered by GLM-4.5-Flash AI
-            </span>
+          {/* Powered by */}
+          <div className="mt-3 text-xs text-gray-500">
+            Powered by GLM-4.5-Flash AI
           </div>
         </div>
-      </section>
+      </div>
 
       {/* Compact Header */}
       {/* Tools Section */}
