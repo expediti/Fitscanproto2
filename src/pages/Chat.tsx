@@ -53,17 +53,28 @@ const Chat = () => {
     setIsLoading(true);
 
     try {
-      // For now, simulate AI response (replace with real API later)
-      setTimeout(() => {
-        const aiMessage: Message = {
-          id: (Date.now() + 1).toString(),
-          text: `Thank you for your health question: "${text}"\n\nI understand your concern. Based on what you've described, here are some initial thoughts:\n\n• This could be related to several factors\n• I recommend monitoring your symptoms\n• If symptoms persist or worsen, please consult a healthcare professional\n\n⚠️ **Important**: This is AI-generated information. Always consult with healthcare professionals for personalized medical advice.\n\n*Powered by GLM-4.5-Flash AI*`,
-          isUser: false,
-          timestamp: new Date(),
-        };
-        setMessages(prev => [...prev, aiMessage]);
-        setIsLoading(false);
-      }, 2000);
+      const response = await fetch('/api/chat', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          message: text,
+          conversationHistory: messages.slice(-5),
+        }),
+      });
+
+      if (!response.ok) throw new Error('Failed to get AI response');
+      const data = await response.json();
+      
+      const aiMessage: Message = {
+        id: (Date.now() + 1).toString(),
+        text: data.response,
+        isUser: false,
+        timestamp: new Date(),
+      };
+
+      setMessages(prev => [...prev, aiMessage]);
     } catch (error) {
       console.error('Error:', error);
       toast.error('AI is temporarily unavailable. Please try again.');
@@ -75,6 +86,7 @@ const Chat = () => {
         timestamp: new Date(),
       };
       setMessages(prev => [...prev, errorMessage]);
+    } finally {
       setIsLoading(false);
     }
   };
