@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { Menu, X, Heart, Sun, Moon, LogIn, LogOut, User, Settings, Globe } from "lucide-react";
+import { Menu, X, Heart, Sun, Moon, LogIn, LogOut, User, Settings } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { 
@@ -12,7 +12,6 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { useTheme } from "./theme-provider";
-import { useLanguage } from "@/contexts/LanguageContext";
 import { supabase } from "@/lib/supabaseClient";
 import toast from 'react-hot-toast';
 
@@ -21,7 +20,6 @@ const Navigation = () => {
   const [user, setUser] = useState(null);
   const [userProfile, setUserProfile] = useState(null);
   const { theme, setTheme } = useTheme();
-  const { language, setLanguage, t } = useLanguage();
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -40,6 +38,7 @@ const Navigation = () => {
         setUserProfile(profile);
       }
     };
+
     getUser();
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
@@ -101,35 +100,17 @@ const Navigation = () => {
           {/* Desktop Navigation */}
           <div className="hidden md:flex items-center gap-8">
             <Link to="/" className="text-sm font-medium hover:text-primary transition-colors">
-              {t('nav.home')}
+              Home
             </Link>
             <Link to="/about" className="text-sm font-medium hover:text-primary transition-colors">
-              {t('nav.about')}
+              About
             </Link>
             <Link to="/blog" className="text-sm font-medium hover:text-primary transition-colors">
-              {t('nav.blog')}
+              Blog
             </Link>
             <Link to="/live-updates" className="text-sm font-medium hover:text-primary transition-colors">
-              {t('nav.liveUpdates')}
+              Live Updates
             </Link>
-
-            {/* Language Switcher */}
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button variant="ghost" size="sm" className="gap-2">
-                  <Globe className="h-4 w-4" />
-                  {language === 'en' ? 'EN' : 'हिं'}
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end">
-                <DropdownMenuItem onClick={() => setLanguage('en')}>
-                  🇺🇸 English
-                </DropdownMenuItem>
-                <DropdownMenuItem onClick={() => setLanguage('hi')}>
-                  🇮🇳 हिंदी
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
 
             {/* Theme Toggle */}
             <Button variant="ghost" size="sm" onClick={toggleTheme}>
@@ -171,38 +152,29 @@ const Navigation = () => {
                   <DropdownMenuSeparator />
                   <DropdownMenuItem onClick={() => navigate('/dashboard')}>
                     <User className="mr-2 h-4 w-4" />
-                    <span>{t('nav.dashboard')}</span>
+                    <span>Dashboard</span>
                   </DropdownMenuItem>
                   <DropdownMenuItem onClick={() => navigate('/profile')}>
                     <Settings className="mr-2 h-4 w-4" />
-                    <span>{t('nav.profile')}</span>
+                    <span>Profile</span>
                   </DropdownMenuItem>
                   <DropdownMenuSeparator />
                   <DropdownMenuItem onClick={handleSignOut}>
                     <LogOut className="mr-2 h-4 w-4" />
-                    <span>{t('nav.signOut')}</span>
+                    <span>Sign out</span>
                   </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
             ) : (
               <Button size="sm" onClick={() => navigate('/login')}>
                 <LogIn className="h-4 w-4 mr-2" />
-                {t('nav.signIn')}
+                Sign In
               </Button>
             )}
           </div>
 
           {/* Mobile Navigation */}
           <div className="flex md:hidden items-center gap-2">
-            {/* Mobile Language Switcher */}
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={() => setLanguage(language === 'en' ? 'hi' : 'en')}
-            >
-              {language === 'en' ? 'हिं' : 'EN'}
-            </Button>
-
             {/* Theme Toggle - Always Visible */}
             <Button variant="ghost" size="sm" onClick={toggleTheme}>
               {theme === "dark" ? (
@@ -242,16 +214,16 @@ const Navigation = () => {
                   <DropdownMenuSeparator />
                   <DropdownMenuItem onClick={() => navigate('/dashboard')}>
                     <User className="mr-2 h-4 w-4" />
-                    {t('nav.dashboard')}
+                    Dashboard
                   </DropdownMenuItem>
                   <DropdownMenuItem onClick={() => navigate('/profile')}>
                     <Settings className="mr-2 h-4 w-4" />
-                    {t('nav.profile')}
+                    Profile
                   </DropdownMenuItem>
                   <DropdownMenuSeparator />
                   <DropdownMenuItem onClick={handleSignOut}>
                     <LogOut className="mr-2 h-4 w-4" />
-                    {t('nav.signOut')}
+                    Sign out
                   </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
@@ -281,28 +253,28 @@ const Navigation = () => {
                 className="text-sm font-medium hover:text-primary transition-colors"
                 onClick={() => setIsMenuOpen(false)}
               >
-                {t('nav.home')}
+                Home
               </Link>
               <Link 
                 to="/about" 
                 className="text-sm font-medium hover:text-primary transition-colors"
                 onClick={() => setIsMenuOpen(false)}
               >
-                {t('nav.about')}
+                About
               </Link>
               <Link 
                 to="/blog" 
                 className="text-sm font-medium hover:text-primary transition-colors"
                 onClick={() => setIsMenuOpen(false)}
               >
-                {t('nav.blog')}
+                Blog
               </Link>
               <Link 
                 to="/live-updates" 
                 className="text-sm font-medium hover:text-primary transition-colors"
                 onClick={() => setIsMenuOpen(false)}
               >
-                {t('nav.liveUpdates')}
+                Live Updates
               </Link>
             </div>
           </div>
