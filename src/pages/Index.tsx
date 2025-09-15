@@ -1,13 +1,12 @@
 import { useState } from "react";
-import { Search, ChevronRight, Mail, Instagram, Heart, Globe, Star, Users, Clock, Shield, Zap, Award, Activity, TrendingUp } from "lucide-react";
+import { Search, ChevronRight, Mail, Instagram, Heart, Globe } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { useNavigate } from "react-router-dom";
 import Navigation from "@/components/Navigation";
 import ToolCard from "@/components/ToolCard";
-import AISearchBar from "@/components/AISearchBar";
+import SimpleSearchBar from "@/components/SimpleSearchBar";
 import VoiceHealthChatbot from "@/components/HealthChatbot";
 import { healthTools, categories } from "@/data/tools";
 
@@ -28,167 +27,116 @@ const Index = () => {
     navigate(`/quiz/${toolId}`);
   };
 
-  const stats = [
-    { icon: Users, label: "Active Users", value: "10K+", color: "text-blue-600" },
-    { icon: Activity, label: "Assessments", value: "50K+", color: "text-green-600" },
-    { icon: Award, label: "Accuracy Rate", value: "95%", color: "text-purple-600" },
-    { icon: Clock, label: "Response Time", value: "<2s", color: "text-orange-600" }
-  ];
-
-  const features = [
-    { icon: Zap, title: "AI-Powered Analysis", description: "Advanced algorithms provide personalized health insights" },
-    { icon: Shield, title: "Privacy Protected", description: "Your health data is encrypted and secure" },
-    { icon: TrendingUp, title: "Progress Tracking", description: "Monitor your health journey over time" }
-  ];
-
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 dark:from-gray-900 dark:via-gray-900 dark:to-gray-800">
       <Navigation />
       
-      {/* Hero Section with AI Search Bar */}
-      <section className="relative overflow-hidden bg-gradient-to-br from-blue-600 via-purple-600 to-indigo-700 text-white">
-        <div className="absolute inset-0 bg-black/10"></div>
-        <div className="relative container mx-auto px-4 py-20">
-          <div className="text-center mb-12">
-            <h1 className="text-4xl md:text-6xl font-bold mb-6 bg-gradient-to-r from-white to-blue-100 bg-clip-text text-transparent">
-              Ask Anything with AI Mode
-            </h1>
-            <p className="text-xl md:text-2xl mb-8 text-blue-100 max-w-3xl mx-auto leading-relaxed">
-              Get instant health insights with AI-powered conversations, comprehensive assessments, and personalized recommendations
-            </p>
-          </div>
-
-          {/* AI Search Bar - Main Feature */}
-          <div className="mb-16">
-            <AISearchBar />
-          </div>
-
-          {/* Quick Stats */}
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mb-8">
-            {stats.map((stat, index) => (
-              <Card key={index} className="bg-white/10 backdrop-blur-sm border-white/20 text-center">
-                <CardContent className="p-4">
-                  <stat.icon className={`w-8 h-8 mx-auto mb-2 ${stat.color.replace('text-', 'text-').replace('-600', '-300')}`} />
-                  <div className="text-2xl font-bold text-white">{stat.value}</div>
-                  <div className="text-sm text-blue-100">{stat.label}</div>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
-        </div>
-
-        {/* Decorative elements */}
-        <div className="absolute top-0 left-0 w-72 h-72 bg-purple-500 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-pulse"></div>
-        <div className="absolute bottom-0 right-0 w-96 h-96 bg-blue-500 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-pulse delay-1000"></div>
+      {/* AI Search Bar - Simple at Top */}
+      <section className="py-8 px-4">
+        <SimpleSearchBar />
       </section>
 
-      {/* Features Section */}
-      <section className="py-20 bg-white dark:bg-gray-900">
-        <div className="container mx-auto px-4">
-          <div className="text-center mb-16">
-            <Badge variant="outline" className="mb-4 text-purple-600 border-purple-200">
-              Experience the future of health assessment
-            </Badge>
-            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-6">
-              Experience the future of health assessment with our AI-powered platform
-            </h2>
-          </div>
+      {/* Hero Section */}
+      <section className="relative py-20 px-4">
+        <div className="max-w-4xl mx-auto text-center">
+          <h1 className="text-4xl md:text-6xl font-bold text-gray-900 dark:text-white mb-6">
+            Your AI Health
+            <span className="text-blue-600 dark:text-blue-400"> Assistant</span>
+          </h1>
+          <p className="text-xl text-gray-600 dark:text-gray-300 mb-8 max-w-2xl mx-auto animate-fade-in-up">
+            Get instant health insights with AI-powered conversations and comprehensive assessments
+          </p>
           
-          <div className="grid md:grid-cols-3 gap-8 mb-16">
-            {features.map((feature, index) => (
-              <Card key={index} className="text-center hover:shadow-lg transition-shadow border-2 hover:border-purple-200">
-                <CardHeader>
-                  <div className="w-16 h-16 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full flex items-center justify-center mx-auto mb-4">
-                    <feature.icon className="w-8 h-8 text-white" />
-                  </div>
-                  <CardTitle className="text-gray-900 dark:text-white">{feature.title}</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <CardDescription className="text-gray-600 dark:text-gray-300">
-                    {feature.description}
-                  </CardDescription>
-                </CardContent>
-              </Card>
-            ))}
+          <div className="flex flex-wrap gap-2 justify-center mb-8">
+            <Badge variant="secondary" className="text-sm">
+              AI-Powered Conversations
+            </Badge>
+            <Badge variant="secondary" className="text-sm">
+              Smart Health Questions
+            </Badge>
+            <Badge variant="secondary" className="text-sm">
+              Personalized Advice
+            </Badge>
+          </div>
+          <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
+            <Button 
+              size="lg" 
+              className="btn-hero px-8 py-3 text-lg"
+              onClick={() => navigate('/login')}
+            >
+              Get Started Free
+              <ChevronRight className="ml-2 h-5 w-5" />
+            </Button>
+            <Button 
+              variant="outline" 
+              size="lg" 
+              className="px-8 py-3 text-lg"
+              onClick={() => navigate('/about')}
+            >
+              Learn More
+            </Button>
           </div>
         </div>
       </section>
 
       {/* Health Tools Section */}
-      <section className="py-20 bg-gray-50 dark:bg-gray-800">
-        <div className="container mx-auto px-4">
-          <div className="text-center mb-16">
-            <Badge variant="outline" className="mb-4 text-blue-600 border-blue-200">
-              Health Assessment Tools
-            </Badge>
-            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-6">
-              Choose from our collection of evidence-based health assessment tools
+      <section className="py-20 px-4">
+        <div className="max-w-6xl mx-auto">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-4">
+              Comprehensive Health Assessments
             </h2>
-          </div>
-
-          {/* Search and Filters */}
-          <div className="mb-12 space-y-6">
-            <div className="relative max-w-md mx-auto">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
-              <Input
-                type="text"
-                placeholder="Search health tools..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                className="pl-10 py-3 rounded-full border-2 focus:border-purple-500"
-              />
-            </div>
-
-            <div className="flex flex-wrap justify-center gap-3">
-              {categories.map((category) => (
-                <Button
-                  key={category}
-                  variant={selectedCategory === category ? "default" : "outline"}
-                  onClick={() => setSelectedCategory(category)}
-                  className={`rounded-full ${
-                    selectedCategory === category
-                      ? "bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600"
-                      : "border-gray-300 hover:border-purple-500"
-                  }`}
-                >
-                  {category}
-                </Button>
-              ))}
-            </div>
-          </div>
-
-          {/* Tools Grid */}
-          {filteredTools.length > 0 ? (
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {filteredTools.map((tool) => (
-                <ToolCard
-                  key={tool.id}
-                  tool={tool}
-                  onStartTool={() => handleStartTool(tool.id)}
+            <p className="text-xl text-gray-600 dark:text-gray-300 mb-8">
+              Choose from our collection of evidence-based health assessment tools
+            </p>
+            {/* Search and Filters */}
+            <div className="flex flex-col md:flex-row gap-4 justify-center items-center mb-8">
+              <div className="relative flex-1 max-w-md">
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
+                <Input
+                  type="text"
+                  placeholder="Search health tools..."
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  className="pl-10"
                 />
-              ))}
-            </div>
-          ) : (
-            <div className="text-center py-16">
-              <div className="w-24 h-24 bg-gray-200 dark:bg-gray-700 rounded-full flex items-center justify-center mx-auto mb-6">
-                <Search className="w-12 h-12 text-gray-400" />
               </div>
-              <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-3">
+              <div className="flex flex-wrap gap-2">
+                {categories.map((category) => (
+                  <Button
+                    key={category}
+                    variant={selectedCategory === category ? "default" : "outline"}
+                    size="sm"
+                    onClick={() => setSelectedCategory(category)}
+                    className="text-sm"
+                  >
+                    {category}
+                  </Button>
+                ))}
+              </div>
+            </div>
+          </div>
+          {/* Tools Grid */}
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {filteredTools.map((tool) => (
+              <ToolCard
+                key={tool.id}
+                tool={tool}
+                onStart={() => handleStartTool(tool.id)}
+              />
+            ))}
+          </div>
+          {filteredTools.length === 0 && (
+            <div className="text-center py-12">
+              <div className="text-gray-400 mb-4">
+                <Search className="h-16 w-16 mx-auto" />
+              </div>
+              <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">
                 No tools found
               </h3>
-              <p className="text-gray-600 dark:text-gray-300 mb-6">
+              <p className="text-gray-600 dark:text-gray-400">
                 Try adjusting your search terms or category filter
               </p>
-              <Button
-                onClick={() => {
-                  setSearchTerm("");
-                  setSelectedCategory("All");
-                }}
-                variant="outline"
-                className="rounded-full"
-              >
-                Clear Filters
-              </Button>
             </div>
           )}
         </div>
@@ -199,43 +147,98 @@ const Index = () => {
         <VoiceHealthChatbot />
       </div>
 
-      {/* Footer CTA */}
-      <section className="py-20 bg-gradient-to-r from-blue-600 to-purple-600 text-white">
-        <div className="container mx-auto px-4 text-center">
-          <Heart className="w-16 h-16 mx-auto mb-6 text-red-300" />
-          <h2 className="text-3xl font-bold mb-6">
-            Join thousands of users who trust FitScan for their health assessments
+      {/* CTA Section */}
+      <section className="py-20 px-4 bg-gradient-to-r from-blue-600 to-purple-600 text-white">
+        <div className="max-w-4xl mx-auto text-center">
+          <h2 className="text-3xl md:text-4xl font-bold mb-4">
+            Ready to Take Control of Your Health?
           </h2>
-          <div className="flex flex-wrap justify-center gap-6 mb-8">
-            <div className="flex items-center gap-2">
-              <Star className="w-5 h-5 text-yellow-400" />
-              <span>4.9/5 Rating</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <Users className="w-5 h-5 text-blue-300" />
-              <span>10,000+ Users</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <Shield className="w-5 h-5 text-green-300" />
-              <span>HIPAA Compliant</span>
-            </div>
-          </div>
-          <div className="flex flex-wrap justify-center gap-4">
-            <Button size="lg" variant="secondary" className="rounded-full">
-              <Mail className="w-5 h-5 mr-2" />
-              Get Health Updates
+          <p className="text-xl mb-8 opacity-90">
+            Join thousands of users who trust FitScan for their health assessments
+          </p>
+          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <Button 
+              size="lg" 
+              variant="secondary"
+              className="px-8 py-3 text-lg text-blue-600"
+              onClick={() => navigate('/login')}
+            >
+              Start Your Assessment
+              <ChevronRight className="ml-2 h-5 w-5" />
             </Button>
-            <Button size="lg" variant="outline" className="text-white border-white hover:bg-white hover:text-purple-600 rounded-full">
-              <Instagram className="w-5 h-5 mr-2" />
-              Follow Us
-            </Button>
-            <Button size="lg" variant="outline" className="text-white border-white hover:bg-white hover:text-purple-600 rounded-full">
-              <Globe className="w-5 h-5 mr-2" />
-              Visit Website
+            <Button 
+              size="lg" 
+              variant="outline"
+              className="px-8 py-3 text-lg border-white text-white hover:bg-white hover:text-blue-600"
+              onClick={() => navigate('/about')}
+            >
+              Learn More
             </Button>
           </div>
         </div>
       </section>
+
+      {/* Footer */}
+      <footer className="bg-gray-900 text-white py-16 px-4">
+        <div className="max-w-6xl mx-auto">
+          <div className="grid md:grid-cols-4 gap-8">
+            <div className="md:col-span-2">
+              <div className="flex items-center gap-2 mb-4">
+                <Heart className="h-8 w-8 text-red-500" />
+                <span className="text-2xl font-bold">FitScan</span>
+              </div>
+              <p className="text-gray-400 mb-4 max-w-md">
+                Your trusted AI-powered health assessment platform. Get personalized insights and professional guidance.
+              </p>
+              <div className="flex gap-4">
+                <Button variant="ghost" size="icon" className="text-gray-400 hover:text-white">
+                  <Mail className="h-5 w-5" />
+                </Button>
+                <Button variant="ghost" size="icon" className="text-gray-400 hover:text-white">
+                  <Instagram className="h-5 w-5" />
+                </Button>
+                <Button variant="ghost" size="icon" className="text-gray-400 hover:text-white">
+                  <Globe className="h-5 w-5" />
+                </Button>
+              </div>
+            </div>
+            
+            <div>
+              <h3 className="font-semibold mb-4">Quick Links</h3>
+              <div className="space-y-2">
+                <Button variant="ghost" className="text-gray-400 hover:text-white p-0 h-auto justify-start">
+                  About Us
+                </Button>
+                <Button variant="ghost" className="text-gray-400 hover:text-white p-0 h-auto justify-start">
+                  Blog
+                </Button>
+                <Button variant="ghost" className="text-gray-400 hover:text-white p-0 h-auto justify-start">
+                  Live Updates
+                </Button>
+              </div>
+            </div>
+            
+            <div>
+              <h3 className="font-semibold mb-4">Support</h3>
+              <div className="space-y-2">
+                <Button variant="ghost" className="text-gray-400 hover:text-white p-0 h-auto justify-start">
+                  Help Center
+                </Button>
+                <Button variant="ghost" className="text-gray-400 hover:text-white p-0 h-auto justify-start">
+                  Privacy Policy
+                </Button>
+                <Button variant="ghost" className="text-gray-400 hover:text-white p-0 h-auto justify-start">
+                  Terms of Service
+                </Button>
+              </div>
+            </div>
+          </div>
+          
+          <div className="border-t border-gray-800 mt-12 pt-8 text-center text-gray-400">
+            <p>&copy; 2025 FitScan. All rights reserved. Made with ❤️ for better health.</p>
+          </div>
+        </div>
+      </footer>
     </div>
   );
 };
