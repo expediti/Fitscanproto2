@@ -185,3 +185,92 @@ const Index = () => {
               {filteredTools.map((tool) => (
                 <ToolCard
                   key={tool.id}
+                  id={tool.id}
+                  title={tool.title}
+                  description={tool.description}
+                  category={tool.category}
+                  difficulty={tool.difficulty}
+                  estimatedTime={tool.estimatedTime}
+                  icon={tool.icon}
+                  onStartTool={handleStartTool}
+                />
+              ))}
+            </div>
+          ) : (
+            <div className="text-center py-8">
+              <div className="text-muted-foreground mb-4 text-sm">No tools found matching your criteria.</div>
+              <Button
+                onClick={() => {
+                  setSearchTerm("");
+                  setSelectedCategory("All");
+                }}
+                variant="outline"
+                size="sm"
+              >
+                Clear Filters
+              </Button>
+            </div>
+          )}
+        </div>
+      </section>
+
+      {/* Footer with Icons */}
+      <footer className="border-t border-border px-4 py-8">
+        <div className="max-w-4xl mx-auto">
+          <div className="flex flex-col md:flex-row justify-between items-center gap-6">
+            <div className="flex items-center gap-2">
+              <Heart className="h-5 w-5 text-primary" />
+              <span className="text-lg font-semibold text-foreground">FitScan</span>
+            </div>
+            
+            <div className="flex items-center gap-6 text-sm text-muted-foreground">
+              <button onClick={() => navigate("/about")} className="hover:text-primary transition-colors">
+                About
+              </button>
+              <button onClick={() => navigate("/chat")} className="hover:text-primary transition-colors">
+                AI Chat
+              </button>
+              <button onClick={() => navigate("/blog")} className="hover:text-primary transition-colors">
+                Blog
+              </button>
+            </div>
+
+            {/* Social Icons */}
+            <div className="flex items-center gap-4">
+              <a
+                href="mailto:hollyman2313@gmail.com"
+                className="p-2 rounded-full bg-primary/10 text-primary hover:bg-primary/20 transition-colors"
+                aria-label="Email"
+              >
+                <Mail className="h-4 w-4" />
+              </a>
+              <a
+                href="https://www.instagram.com/broxgit?igsh=MXNyMXFzM3VyNXB6eA=="
+                target="_blank"
+                rel="noopener noreferrer"
+                className="p-2 rounded-full bg-primary/10 text-primary hover:bg-primary/20 transition-colors"
+                aria-label="Instagram"
+              >
+                <Instagram className="h-4 w-4" />
+              </a>
+            </div>
+          </div>
+          
+          <div className="text-center mt-6 pt-4 border-t border-border text-sm text-muted-foreground">
+            © 2025 FitScan • Developed by{" "}
+            <a
+              href="https://www.instagram.com/broxgit?igsh=MXNyMXFzM3VyNXB6eA=="
+              target="_blank"
+              rel="noopener noreferrer"
+              className="font-semibold text-primary hover:text-primary/80 transition-colors"
+            >
+              BroxGit
+            </a>
+          </div>
+        </div>
+      </footer>
+    </div>
+  );
+};
+
+export default Index;
