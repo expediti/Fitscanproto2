@@ -97,111 +97,91 @@ const Index = () => {
     <div className="min-h-screen bg-background text-foreground">
       <Navigation />
       
-      {/* AI SEARCH BAR - SHOWS FOR EVERYONE */}
-      <div className="w-full bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-950/50 dark:to-indigo-950/50 py-16 px-4">
-        <div className="max-w-6xl mx-auto text-center">
-          {/* AI Badge */}
-          <div className="mb-6">
-            <Badge className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold">
-              🤖 AI Health Assistant - Ask Anything
+      {/* COMPACT AI SEARCH BAR - GOOGLE STYLE */}
+      <div className="px-4 py-6 md:py-12">
+        <div className="max-w-2xl mx-auto text-center">
+          {/* Small AI Badge */}
+          <div className="mb-4">
+            <Badge className="px-3 py-1 bg-blue-100 text-blue-700 border-blue-200 text-xs">
+              🤖 AI Health Assistant
             </Badge>
           </div>
-          
-          {/* Title */}
-          <h1 className="text-3xl md:text-5xl font-bold text-gray-900 dark:text-white mb-4">
-            Your AI Health Assistant
-          </h1>
-          <p className="text-lg text-gray-600 dark:text-gray-300 mb-8 max-w-2xl mx-auto">
-            Get instant health insights with AI-powered conversations and comprehensive assessments
-          </p>
 
-          {/* PROMINENT SEARCH BAR */}
+          {/* COMPACT SEARCH BAR - GOOGLE STYLE */}
           <div 
-            className="max-w-4xl mx-auto mb-8 cursor-pointer group"
+            className="cursor-pointer group mb-6"
             onClick={handleAISearch}
           >
-            <div className="relative">
-              {/* Search Bar */}
-              <div className="relative bg-white dark:bg-gray-800 rounded-full shadow-2xl border-2 border-blue-200 dark:border-blue-800 group-hover:border-blue-400 dark:group-hover:border-blue-600 transition-all duration-300">
-                <div className="flex items-center gap-6 px-8 py-6">
-                  <Search className="w-7 h-7 text-gray-400 group-hover:text-blue-500 transition-colors flex-shrink-0" />
-                  
-                  <div className="flex-1 text-left text-gray-500 dark:text-gray-400 text-xl font-medium">
-                    Ask me about your health... (e.g., I have chest pain and shortness of breath)
-                  </div>
-                  
-                  <div className="bg-gradient-to-r from-blue-500 to-purple-600 text-white rounded-full h-14 w-14 flex items-center justify-center group-hover:scale-110 transition-transform flex-shrink-0 shadow-lg">
-                    <span className="text-xl">✨</span>
-                  </div>
+            <div className="relative bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-full shadow-sm hover:shadow-md transition-shadow duration-200 group-hover:border-blue-400">
+              <div className="flex items-center gap-3 px-4 py-3 md:px-5 md:py-4">
+                <Search className="w-5 h-5 text-gray-400 group-hover:text-blue-500 transition-colors flex-shrink-0" />
+                
+                <div className="flex-1 text-left text-gray-500 dark:text-gray-400 text-sm md:text-base">
+                  Ask about your health symptoms...
+                </div>
+                
+                <div className="bg-blue-600 text-white rounded-full h-8 w-8 flex items-center justify-center group-hover:scale-105 transition-transform flex-shrink-0">
+                  <span className="text-sm">✨</span>
                 </div>
               </div>
             </div>
           </div>
 
-          {/* Features */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 max-w-3xl mx-auto text-sm text-gray-600 dark:text-gray-300">
-            <div className="flex items-center justify-center gap-2">
-              <span className="text-green-500">AI-Powered Conversations</span>
-            </div>
-            <div className="flex items-center justify-center gap-2">
-              <span className="text-blue-500">Smart Health Questions</span>
-            </div>
-            <div className="flex items-center justify-center gap-2">
-              <span className="text-purple-500">Personalized Advice</span>
-            </div>
-          </div>
-
-          {/* CTA Buttons */}
-          <div className="flex flex-col sm:flex-row gap-4 justify-center mt-8">
-            <Button 
-              size="lg" 
-              onClick={handleAISearch}
-              className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-3"
-            >
-              Get Started Free
-            </Button>
-            <Button 
-              size="lg" 
-              variant="outline"
-              className="border-2 border-gray-300 hover:border-blue-600 px-8 py-3"
-            >
-              Learn More
-            </Button>
+          {/* Quick Example Pills */}
+          <div className="flex flex-wrap gap-2 justify-center mb-8">
+            {[
+              "Chest pain",
+              "Headache", 
+              "Fever",
+              "Anxiety"
+            ].map((example) => (
+              <button
+                key={example}
+                onClick={() => navigate(`/chat?q=${encodeURIComponent(example)}`)}
+                className="px-3 py-1.5 bg-gray-100 hover:bg-gray-200 dark:bg-gray-800 dark:hover:bg-gray-700 rounded-full text-xs text-gray-700 dark:text-gray-300 transition-colors"
+              >
+                {example}
+              </button>
+            ))}
           </div>
         </div>
       </div>
 
       {/* Tools Section */}
-      <section className="py-8 px-4">
+      <section className="px-4 pb-8">
         <div className="max-w-7xl mx-auto">
-          {/* Search and Filter */}
-          <div className="flex flex-col md:flex-row gap-4 mb-8">
-            <div className="relative flex-1">
+          {/* Compact Search and Filter */}
+          <div className="space-y-4 mb-6">
+            <div className="relative">
               <Search className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
               <Input
                 placeholder="Search health tools..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="pl-10"
+                className="pl-10 h-10"
               />
             </div>
-            <div className="flex gap-2 flex-wrap">
-              {categoriesToUse.map((category) => (
-                <Badge
-                  key={category}
-                  variant={selectedCategory === category ? "default" : "outline"}
-                  className="cursor-pointer hover:bg-primary/10 text-foreground"
-                  onClick={() => setSelectedCategory(category)}
-                >
-                  {category}
-                </Badge>
-              ))}
+            
+            {/* Category Pills - Horizontal Scroll on Mobile */}
+            <div className="overflow-x-auto">
+              <div className="flex gap-2 pb-2 min-w-max md:min-w-0 md:flex-wrap">
+                {categoriesToUse.map((category) => (
+                  <Badge
+                    key={category}
+                    variant={selectedCategory === category ? "default" : "outline"}
+                    className="cursor-pointer hover:bg-primary/10 text-foreground whitespace-nowrap"
+                    onClick={() => setSelectedCategory(category)}
+                  >
+                    {category}
+                  </Badge>
+                ))}
+              </div>
             </div>
           </div>
           
-          {/* Tools Grid */}
+          {/* Tools Grid - Mobile Optimized */}
           {filteredTools.length > 0 ? (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
               {filteredTools.map((tool) => (
                 <ToolCard
                   key={tool.id}
@@ -217,14 +197,15 @@ const Index = () => {
               ))}
             </div>
           ) : (
-            <div className="text-center py-12">
-              <div className="text-muted-foreground mb-4">No tools found matching your criteria.</div>
+            <div className="text-center py-8">
+              <div className="text-muted-foreground mb-4 text-sm">No tools found matching your criteria.</div>
               <Button
                 onClick={() => {
                   setSearchTerm("");
                   setSelectedCategory("All");
                 }}
                 variant="outline"
+                size="sm"
               >
                 Clear Filters
               </Button>
@@ -233,71 +214,31 @@ const Index = () => {
         </div>
       </section>
 
-      {/* Professional Footer */}
-      <footer className="bg-background border-t border-border">
-        <div className="max-w-7xl mx-auto px-4 py-12">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-            {/* Brand Section */}
-            <div className="lg:col-span-2">
-              <div className="flex items-center gap-2 mb-4">
-                <div className="h-8 w-8 bg-primary rounded-lg flex items-center justify-center">
-                  <Heart className="h-5 w-5 text-primary-foreground" />
-                </div>
-                <span className="text-xl font-bold text-foreground">FitScan</span>
-              </div>
-              <p className="text-muted-foreground mb-6 max-w-md leading-relaxed">
-                Your trusted health assessment platform providing accurate, AI-powered symptom checkers
-                and diagnostic tools for better health decisions.
-              </p>
+      {/* Minimal Footer */}
+      <footer className="border-t border-border px-4 py-6">
+        <div className="max-w-4xl mx-auto">
+          <div className="flex flex-col md:flex-row justify-between items-center gap-4">
+            <div className="flex items-center gap-2">
+              <Heart className="h-4 w-4 text-primary" />
+              <span className="text-sm font-medium text-foreground">FitScan</span>
             </div>
-            {/* Quick Links */}
-            <div>
-              <h3 className="font-semibold text-foreground mb-4">Quick Links</h3>
-              <ul className="space-y-3">
-                <li>
-                  <button
-                    onClick={() => navigate("/")}
-                    className="text-muted-foreground hover:text-foreground transition-colors"
-                  >
-                    Home
-                  </button>
-                </li>
-                <li>
-                  <button
-                    onClick={() => navigate("/about")}
-                    className="text-muted-foreground hover:text-foreground transition-colors"
-                  >
-                    About Us
-                  </button>
-                </li>
-                <li>
-                  <button
-                    onClick={() => navigate("/chat")}
-                    className="text-muted-foreground hover:text-foreground transition-colors"
-                  >
-                    AI Chat
-                  </button>
-                </li>
-              </ul>
+            
+            <div className="flex items-center gap-4 text-xs text-muted-foreground">
+              <button onClick={() => navigate("/about")}>About</button>
+              <button onClick={() => navigate("/chat")}>AI Chat</button>
+              <a href="mailto:hollyman2313@gmail.com">Contact</a>
             </div>
-            {/* Contact Info */}
-            <div>
-              <h3 className="font-semibold text-foreground mb-4">Contact</h3>
-              <div className="space-y-3">
-                <div className="flex items-center gap-3">
-                  <Mail className="h-4 w-4 text-primary" />
-                  <a href="mailto:hollyman2313@gmail.com" className="text-muted-foreground hover:text-primary">
-                    hollyman2313@gmail.com
-                  </a>
-                </div>
-                <div className="flex items-center gap-3">
-                  <Instagram className="h-4 w-4 text-primary" />
-                  <a href="https://www.instagram.com/broxgit" target="_blank" className="text-muted-foreground hover:text-primary">
-                    @broxgit
-                  </a>
-                </div>
-              </div>
-            </div>
+          </div>
+          
+          <div className="text-center mt-4 text-xs text-muted-foreground">
+            © 2025 FitScan • Developed by{" "}
+            <a
+              href="https://www.instagram.com/broxgit"
+              target="_blank"
+              className="text-primary hover:underline"
+            >
+              BroxGit
+            </a>
           </div>
         </div>
       </footer>
