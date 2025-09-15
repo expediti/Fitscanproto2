@@ -34,86 +34,70 @@ const Index = () => {
     <div className="min-h-screen bg-background text-foreground">
       <Navigation />
       
-      {/* MEGA PROMINENT AI SEARCH BAR - IMPOSSIBLE TO MISS */}
-      <div style={{
-        width: '100%',
-        backgroundColor: '#1e40af',
-        color: 'white',
-        padding: '40px 20px',
-        textAlign: 'center',
-        position: 'relative',
-        zIndex: 999
-      }}>
-        <div style={{ maxWidth: '800px', margin: '0 auto' }}>
-          <h1 style={{ 
-            fontSize: '32px', 
-            fontWeight: 'bold', 
-            marginBottom: '16px',
-            color: 'white'
-          }}>
-            🤖 AI Health Assistant
-          </h1>
-          
-          <p style={{ 
-            fontSize: '18px', 
-            marginBottom: '24px',
-            color: '#dbeafe'
-          }}>
-            Ask me anything about your health - I'm powered by GLM-4.5-Flash AI
-          </p>
-          
-          {/* HUGE SEARCH BAR */}
-          <div 
-            onClick={handleAISearch}
-            style={{
-              backgroundColor: 'white',
-              borderRadius: '50px',
-              padding: '20px 30px',
-              cursor: 'pointer',
-              boxShadow: '0 10px 30px rgba(0,0,0,0.3)',
-              display: 'flex',
-              alignItems: 'center',
-              gap: '20px',
-              maxWidth: '600px',
-              margin: '0 auto',
-              border: '3px solid #3b82f6'
-            }}
-          >
-            <span style={{ fontSize: '24px' }}>🔍</span>
-            <span style={{ 
-              flex: 1, 
-              color: '#374151', 
-              fontSize: '18px',
-              textAlign: 'left'
-            }}>
-              Ask me: "I have chest pain and shortness of breath"
-            </span>
-            <div style={{
-              backgroundColor: '#1e40af',
-              color: 'white',
-              borderRadius: '50%',
-              width: '60px',
-              height: '60px',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              fontSize: '24px'
-            }}>
-              ✨
-            </div>
+      {/* AI SEARCH BAR - VISIBLE TO EVERYONE */}
+      <section className="w-full bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-950/50 dark:to-indigo-950/50 py-12 px-4">
+        <div className="max-w-6xl mx-auto text-center">
+          {/* AI Badge */}
+          <div className="mb-6">
+            <Badge className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold">
+              🤖 AI Health Assistant - Ask Anything
+            </Badge>
           </div>
           
-          <p style={{ 
-            marginTop: '16px', 
-            fontSize: '14px',
-            color: '#bfdbfe'
-          }}>
-            Click anywhere on the search bar to start your AI health consultation
+          {/* Title */}
+          <h1 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-4">
+            Get Instant Health Answers with AI
+          </h1>
+          <p className="text-lg text-gray-600 dark:text-gray-300 mb-8 max-w-2xl mx-auto">
+            Ask our AI about symptoms, treatments, medications, or any health concerns. 
+            Powered by advanced GLM-4.5-Flash technology.
           </p>
-        </div>
-      </div>
 
-      {/* Your Existing Content */}
+          {/* PROMINENT SEARCH BAR */}
+          <div 
+            className="max-w-4xl mx-auto mb-6 cursor-pointer group"
+            onClick={handleAISearch}
+          >
+            <div className="relative">
+              {/* Glow Effect */}
+              <div className="absolute -inset-1 bg-gradient-to-r from-blue-300 to-purple-300 rounded-full opacity-20 group-hover:opacity-30 transition duration-300 blur"></div>
+              
+              {/* Search Bar */}
+              <div className="relative bg-white dark:bg-gray-800 rounded-full shadow-2xl border-2 border-blue-200 dark:border-blue-800 group-hover:border-blue-400 dark:group-hover:border-blue-600 transition-all duration-300">
+                <div className="flex items-center gap-6 px-8 py-6">
+                  <Search className="w-7 h-7 text-gray-400 group-hover:text-blue-500 transition-colors flex-shrink-0" />
+                  
+                  <div className="flex-1 text-left text-gray-500 dark:text-gray-400 text-xl font-medium">
+                    Ask me: "I have chest pain and shortness of breath"
+                  </div>
+                  
+                  <div className="bg-gradient-to-r from-blue-500 to-purple-600 text-white rounded-full h-14 w-14 flex items-center justify-center group-hover:scale-110 transition-transform flex-shrink-0 shadow-lg">
+                    <span className="text-xl">✨</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Features */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 max-w-3xl mx-auto text-sm text-gray-600 dark:text-gray-300">
+            <div className="flex items-center justify-center gap-2">
+              <span className="text-green-500">✓</span>
+              <span>Free AI Health Consultation</span>
+            </div>
+            <div className="flex items-center justify-center gap-2">
+              <span className="text-blue-500">✓</span>
+              <span>Instant Medical Guidance</span>
+            </div>
+            <div className="flex items-center justify-center gap-2">
+              <span className="text-purple-500">✓</span>
+              <span>24/7 Available</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Tools Section */}
       <section className="py-8 px-4">
         <div className="max-w-7xl mx-auto">
           {/* Search and Filter */}
@@ -140,6 +124,7 @@ const Index = () => {
               ))}
             </div>
           </div>
+          
           {/* Tools Grid */}
           {filteredTools.length > 0 ? (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
