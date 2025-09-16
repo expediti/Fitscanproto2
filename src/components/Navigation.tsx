@@ -116,7 +116,7 @@ const Navigation = () => {
               rel="noopener noreferrer"
               className="text-sm font-medium hover:text-primary transition-colors"
             >
-              Swasthya AI
+              SWASTHA AI
             </a>
 
             {/* Theme Toggle */}
