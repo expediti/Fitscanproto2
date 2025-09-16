@@ -38,7 +38,6 @@ const Navigation = () => {
         setUserProfile(profile);
       }
     };
-
     getUser();
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
@@ -111,6 +110,14 @@ const Navigation = () => {
             <Link to="/live-updates" className="text-sm font-medium hover:text-primary transition-colors">
               Live Updates
             </Link>
+            <a 
+              href="https://digitalcontentkeytakeawayextractor.blogspot.com/?m=1" 
+              target="_blank" 
+              rel="noopener noreferrer"
+              className="text-sm font-medium hover:text-primary transition-colors"
+            >
+              Swasthya AI
+            </a>
 
             {/* Theme Toggle */}
             <Button variant="ghost" size="sm" onClick={toggleTheme}>
@@ -276,6 +283,15 @@ const Navigation = () => {
               >
                 Live Updates
               </Link>
+              <a 
+                href="https://digitalcontentkeytakeawayextractor.blogspot.com/?m=1" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="text-sm font-medium hover:text-primary transition-colors"
+                onClick={() => setIsMenuOpen(false)}
+              >
+                Swasthya AI
+              </a>
             </div>
           </div>
         )}
